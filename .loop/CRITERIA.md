@@ -1,6 +1,6 @@
 # CRITERIA: binary acceptance
 
-1. [PASS] Repo root at sBs/directorMode/ with README.md, LICENSE (MIT), skill/SKILL.md, docs/index.html, research/ (3 source captures).
+1. [PASS] Repo root at sBs/crank/ with README.md, LICENSE (MIT), skill/SKILL.md, docs/index.html, research/ (3 source captures).
 2. [PASS] README opens with a block-figlet ASCII banner reading DIRECTOR MODE, inside a code fence, in the COMPASS house style.
 3. [PASS] README explains both modes, the four-part loop, install steps, and the "verification is the moat" + "won't deskill you" positions, in Victor's first-person voice with no em dashes.
 4. [PASS] skill/SKILL.md is the actual working skill (incl. the new "scheduled" argument: async gate queue, hard ceiling, STATE.json) so a reader can install and run it.
