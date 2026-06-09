@@ -66,6 +66,8 @@ The same loop with the human pulled out of the room. Launched by a scheduler or 
 
 > Scheduling and durability ship together or not at all. A loop that wakes on a timer without crash-safe state and an enforced ceiling is how an unattended run burns a budget and loses its place at the same time.
 
+**Status:** scheduled mode is new and not yet hardened across many real unattended runs. Crank does not ship its own scheduler; the heartbeat comes from Claude Code's own `/schedule`, `/loop`, or cron, which invokes `/diy-loop scheduled ...` on your cadence. Start with a low ceiling and a small, reversible task, and watch the approvals queue before trusting it with anything expensive or long-running.
+
 ---
 
 ## The two things the hype skips

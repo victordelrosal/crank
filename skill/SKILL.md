@@ -1,7 +1,7 @@
 ---
 name: diy-loop
 description: >-
-  Director Mode. Use when Victor hands over the wheel and wants you to set the direction, prompt
+  Crank. Use when Victor hands over the wheel and wants you to set the direction, prompt
   yourself, and run end-to-end until the work is 10x what he would have asked for. Triggers:
   "self prompt and loop", "set your own acceptance criteria", "loop til satisfied", "be the
   director", "you decide the direction", "fleet of agents", "10x or 100x work", "make me proud",
@@ -11,14 +11,14 @@ description: >-
   acceptance criteria (and a PRD when the work warrants one), dispatch a fleet, run a
   plan-execute-red-team-decide loop scored by /bet-weights, and STOP for a human before anything
   irreversible or outward-facing. Supersedes the older loop-til-satisfied and diy-director skills.
-  Default invocation is interactive Director Mode (you, present, between rounds). Pass the
+  Default invocation is interactive Crank (you, present, between rounds). Pass the
   `scheduled` argument ("/diy-loop scheduled ...", aliases "live", "cron", "unattended", "on a
   heartbeat", "run nightly", "while I'm away") to run the same loop unattended on a heartbeat:
   human gates become an async approval queue, a hard token/dollar ceiling aborts the run, and
   crash-safe STATE.json lets a cron-fired cold start resume.
 ---
 
-# DIY Loop: Director Mode
+# Crank (the `/diy-loop` skill)
 
 This is what to invoke when Victor hands over the wheel and says, in effect: "you decide what
 good looks like, you decide how many rounds, you direct the fleet, you prompt yourself instead
@@ -31,7 +31,7 @@ victory early, and the model takes irreversible real-world actions it should not
 keeps the freedom (you choose the direction, you write the prompts) while closing both gaps.
 
 The deal: total creative autonomy inside a frame that guarantees the output is real, verified,
-and valuable, and that anything irreversible stops for a human first. Director Mode is *more*
+and valuable, and that anything irreversible stops for a human first. Crank is *more*
 rigorous than ordinary work, not less, because there is no Victor in the loop to catch drift.
 The criteria you set become the contract. The /bet-weights check at the end of every round is
 non-negotiable.
@@ -185,12 +185,17 @@ to think. When in doubt about reach: draft it, then gate the send.
 
 ## Scheduled mode (`/diy-loop scheduled`): running unattended on a heartbeat
 
-Default Director Mode is interactive: Victor is present between rounds, and a STOP gate pauses
+Crank runs interactively by default: Victor is present between rounds, and a STOP gate pauses
 the loop in-session until he answers. Scheduled mode is the same loop with the human pulled out
 of the room. It is launched by `/schedule`, `/loop`, `ScheduleWakeup`, or `CronCreate`, runs
 while Victor is away, and must survive a closed laptop and a cold context. This is the difference
 between a loop you *kick off* and a loop that is *running*. Three things change the moment no one
 is watching, and all three are mandatory, not optional, in this mode.
+
+**Status: scheduled mode is new (added 2026-06-09) and not yet hardened across many real
+unattended runs.** Start with a low ceiling and a small, reversible task, and watch the
+approvals queue before trusting it with anything expensive or long-running. The discipline below
+is sound; treat the first few scheduled jobs as a shakedown, not production.
 
 **1. The human gate becomes an async approval queue, never an auto-approval.** The Checkpoint
 gates above still hold exactly: nothing irreversible or outward-facing happens without Victor.
@@ -245,7 +250,7 @@ interactive loop as normal.
   ten mediocre ones.
 - **Scope drift and silent autonomy.** Re-anchor to the mission each round, and keep a visible
   log so Victor can audit the loop and intervene.
-- **Using this for trivial work.** Director Mode is for substantial deliverables. Three-line
+- **Using this for trivial work.** Crank is for substantial deliverables. Three-line
   edits do not need a writers room. If the work is small, just do it.
 
 ## When to STOP looping
@@ -282,7 +287,7 @@ Produce one integration summary, scannable in 30 seconds:
   do not flatter it as trivial, do not gatekeep it as impossible. Descriptive, never a sales
   pitch, never a guilt trip. Plain text, no em dashes. This is teach-before-doing made visible:
   the loop did the work, and the addendum keeps the capability transfer honest by naming what
-  the convenience replaced, so Director Mode never quietly leaves Victor more served and less
+  the convenience replaced, so Crank never quietly leaves Victor more served and less
   able.
 
 End with the evidence, not "I hope this helps".
@@ -344,4 +349,4 @@ multi-round loop) and `diy-director` (the values compass + the irreversible-acti
 into one super-skill where the director auto-prompts end-to-end, grasps the intent, may write a
 PRD, sets its own acceptance criteria, and protects every irreversible outward-facing decision
 behind a human gate. The discipline (self-set criteria + loop + bet-weights + honest downgrades +
-hard STOP gates) is the difference between Director Mode shipping and Director Mode pretending.
+hard STOP gates) is the difference between Crank shipping and Crank pretending.
