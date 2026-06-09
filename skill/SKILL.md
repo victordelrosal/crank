@@ -62,6 +62,11 @@ files, prior work, the stated and unstated goal. State in 3 to 5 lines your curr
 of what this is, who it is for, and what "value" means here. If the ground truth is missing
 something you genuinely cannot proceed without, ask one sharp question; otherwise proceed.
 
+**Consult before deriving.** If a `LEARNINGS.md` exists in the workspace (or `.loop/LEARNINGS.md`),
+read it before any other planning and apply its rules instead of re-deriving them. That file is
+the distilled output of prior Crank runs (see the memory loop in the final handoff); a rule you
+read costs nothing, a rule you re-derive costs a round.
+
 ### 2. FRAME: self-prompt the contract (write it down before working)
 This is where you prompt yourself instead of waiting for Victor. Produce, in the workspace:
 
@@ -71,7 +76,12 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
   yes/no test. Good: "the pilot script is 25+ pages in industry-standard teleplay format with
   sluglines, action, dialogue." Bad: "the pilot is good." Draw them from Victor's stated goal
   *and* your read of the intent between the lines. If a criterion cannot be checked yes/no,
-  rewrite it until it can.
+  rewrite it until it can. **Prefer environment-checkable over judge-checkable**: a criterion a
+  command can verify (the test passes, the page returns 200, 0 console errors, the file exists at
+  the path) beats one only a judge can score, because the feedback comes from the environment,
+  not an opinion. Reserve judge-checkable criteria for the genuinely tasteful calls, and even
+  then name the rubric. Criteria are frozen at FRAME; any mid-run edit to a criterion is a
+  downgrade and follows the downgrade rules.
 - **A PRD when the work warrants one** (a product, a feature, a multi-asset launch, anything a
   builder would need a spec for). Use the `sophie-prd` skill for the shape. For a one-off
   artifact, the BRIEF plus CRITERIA is enough; do not manufacture a PRD for small work.
@@ -105,7 +115,22 @@ compromised by definition: it knows what it intended, so it scores intent, not o
 default RED-TEAM is a cold, separate agent that sees `CRITERIA.md` and the artifacts but NOT the
 builder's reasoning or self-scores, and is told to fail the work. Spawn it as a named fleet role
 in DECOMPOSE. Only in plain chat, where no subagent is available, fall back to the hostile-critic
-hat below; the hat is the weakest version of this step, not the standard one.
+hat below; the hat is the weakest version of this step, not the standard one. This is not just
+Crank doctrine: Anthropic's published loop experiments (Lance Martin, June 2026) found a verifier
+subagent outperforms self-critique precisely because grading happens in an independent context
+window, and their hosted equivalent (CMA Outcomes) will not let the agent stop until the grader
+passes the rubric.
+
+Two rules keep the verifier honest:
+- **The verifier's verdict gates the stop.** The loop cannot declare done while the cold verifier
+  marks any criterion failed. The director does not get to overrule a fail with confidence; the
+  only override is a written, surfaced downgrade per the downgrade rules. The verifier is the
+  grader; the director is the builder; the builder does not grade.
+- **Fresh verifier every round.** Never reuse a verifier's context across rounds: a verifier that
+  remembers its last verdict anchors on it and starts grading its own consistency instead of the
+  work. Spawn a new cold agent each round with only `CRITERIA.md` and the current artifacts.
+- For each failed criterion, the verifier states the evidence of failure (the command output, the
+  line, the missing artifact), not just the verdict, so the next round has something to aim at.
 
 Switch fully into hostile-critic mode. Your job here is to fail the work, not defend it.
 - Score every acceptance criterion: pass / fail / partial, with evidence (the test output, the
@@ -115,21 +140,35 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
   assume without checking? What is confidently stated but unverified? What looks impressive but
   is not actually useful?
 - Run **/bet-weights**: would you bet your neural network weights on each criterion passing real
-  human review? If not, it fails, and it goes back into the next round or gets downgraded
-  honestly. Write the verdict down, including what is still weak. Ordering is ironclad: the
-  evidence (test run, checked source, edge case) comes BEFORE the bet, never after. /bet-weights
-  is a calibration framing, not a verification mechanism; a confident "yes" on something unverified
-  is theatre, and theatre that reads like rigor is worse than no check at all.
+  human review? Write the percentage down per criterion; it goes into the final handoff. Ordering
+  is ironclad: the evidence (test run, checked source, edge case) comes BEFORE the bet, never
+  after. **/bet-weights is a reported confidence label, never the pass condition.** The pass
+  condition is the cold verifier's verdict; self-critique is exactly the mechanism the evidence
+  says underperforms, so a confident "yes" on something the verifier failed changes nothing. Its
+  job is calibration for the human reading the handoff, and flagging criteria where the verifier
+  passed but your honest confidence is low (surface those explicitly).
 
 ### 6. DECIDE
-- **Criteria met and rubric clears the bar**: stop. Declare done, show the evidence, hand back.
-  Do not polish past the point of real improvement. If round one passes everything *easily*,
-  sanity-check that the criteria were actually demanding, but do not invent a failure to prove
-  rigor: well-scoped medium work genuinely can land in one pass. Keep the suspicion, not the trap.
-- **Not met, budget remains**: write the next self-prompt as a specific improvement hypothesis
-  ("the X is weak because Y; next pass I will Z"), then loop. Each round must change something
-  substantive, not just reword. For a failed criterion choose one of: (a) refine inline, (b)
-  spawn a sharper-angled agent, or (c) downgrade the criterion with a written rationale.
+- **The verifier passes every criterion and the rubric clears the bar**: stop. Declare done, show
+  the evidence, hand back. The stop is gated on the cold verifier's verdict, not on the director
+  feeling finished. Do not polish past the point of real improvement. If round one passes
+  everything *easily*, sanity-check that the criteria were actually demanding, but do not invent
+  a failure to prove rigor: well-scoped medium work genuinely can land in one pass. Keep the
+  suspicion, not the trap.
+- **Not met, budget remains**: first **investigate, then iterate**. Before writing the next
+  self-prompt, figure out *why* the criterion failed (read the error, reproduce it, check the
+  assumption) and verify the diagnosis: a fix aimed at an unverified guess is a wasted round.
+  Then write the next self-prompt as a specific improvement hypothesis ("the X is weak because Y,
+  verified by Z; next pass I will W"), and **classify it as structural or scalar**. Scalar
+  adjusts a knob on the same approach (a constant, a phrasing, a parameter); structural changes
+  the approach itself (a different architecture, a rewritten section, a new data source). When
+  criteria are far from passing, prefer the structural bet: a loop that only turns scalar knobs
+  converges on a local maximum and bills you for it. And hold your nerve: a structural bet that
+  regresses on its first round is not automatically wrong. Give it one round of follow-through
+  before reverting, budget permitting; the biggest wins in Anthropic's own loop experiments came
+  from pushing through an initial regression. Each round must change something substantive, not
+  just reword. For a failed criterion choose one of: (a) refine inline, (b) spawn a
+  sharper-angled agent, or (c) downgrade the criterion with a written rationale.
 - **Budget exhausted or diminishing returns**: stop honestly. Report what is strong, what is
   weak, what the next real leap would require. A truthful "here is where it stands" beats a fake
   "10x achieved". Better to ship 8/10 criteria honestly than fake-ship 10/10.
@@ -256,7 +295,8 @@ interactive loop as normal.
 ## When to STOP looping
 
 Any one triggers stop:
-- All binary criteria pass and you would bet your weights on each.
+- The cold verifier passes every binary criterion (the verifier verdict is the gate; bet-weights
+  confidence is reported alongside it, never substituted for it).
 - Loop budget hit.
 - Diminishing returns: this round produced no new pass and no clear path to one next round.
 - Victor interjects with a new instruction.
@@ -273,9 +313,27 @@ prose log is for the human and is the fallback if `STATE.json` is missing or sta
 
 ## Final handoff
 
-Produce one integration summary, scannable in 30 seconds:
-- **Criteria checklist** with pass / fail / downgrade marks against each.
-- **Bet-weights confidence** per criterion (a percentage you would actually bet on).
+**Distill before you hand off (the memory loop).** Before writing the summary, update
+`LEARNINGS.md` in the workspace (create it if absent). The progression is fail, investigate,
+verify, distill, consult: failures were investigated and verified during DECIDE; distilling
+turns those verified facts into general rules a future run can apply without re-deriving them;
+ORIENT consults the file at the start of the next run. Discipline for the file:
+- **Only distilled, verified rules.** A rule earns its line by being checked, not guessed. "The
+  staging API rejects keys older than 90 days (verified round 2, curl output in log)" belongs;
+  "maybe the key format is wrong?" does not. A pile of failure notes and open guesses is the
+  failure mode, not memory.
+- **General over episodic.** Write the rule, not the anecdote: what would have saved a round if
+  known at ORIENT, phrased so it applies to the next task, not just this one.
+- **Prune on write.** If a run disproves an existing rule, correct or delete it. A stale rule
+  consulted is worse than no rule.
+- Keep it short: one line per rule, the file readable in under a minute. If a run produced no
+  rule worth keeping, write nothing; most rounds will not.
+
+Then produce one integration summary, scannable in 30 seconds:
+- **Criteria checklist** with pass / fail / downgrade marks against each. The marks are the cold
+  verifier's final-round verdicts, not the director's.
+- **Bet-weights confidence** per criterion (a percentage you would actually bet on), reported
+  alongside the verifier verdict, flagging any passed criterion where your confidence is low.
 - **One-paragraph honest assessment**. No marketing voice. What it is, what is strong, what is
   fragile.
 - **Absolute paths** to every artifact produced.

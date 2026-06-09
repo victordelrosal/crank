@@ -12,7 +12,7 @@
 
 **A Claude Code skill for designing loops that prompt the agent, instead of being the loop yourself. You turn the crank once; it runs the loop, checks its own work, and stops before anything it cannot take back.**
 
-Maintained by [Victor del Rosal](https://github.com/victordelrosal). Built and dogfooded with Claude Code (Opus).
+Maintained by [Victor del Rosal](https://github.com/victordelrosal). Built and dogfooded with Claude Code; designed for Mythos-class models (Fable 5) and works on Opus 4.8, where the frame does more of the lifting.
 
 ---
 
@@ -22,7 +22,7 @@ For two years the way you got something out of a coding agent was simple: write 
 
 In June 2026 that idea got a name and a 2-million-view argument. Peter Steinberger put it as "you shouldn't be prompting coding agents anymore, you should be designing loops that prompt your agents." Boris Cherny, who created Claude Code, said the same thing from the other side: "I don't prompt Claude anymore. I have loops running that prompt Claude." Addy Osmani called it "loop engineering." The timeline spent a week arguing about what the word "loop" even meant.
 
-The honest read of that week: the loudest idea in AI coding was one most people repeating it could not define or demonstrate. Crank is my attempt to actually define it and ship it, as a working skill, with the two things the hype keeps skipping: a verifier that is harder to fool than the builder, and a stopping discipline that keeps an unattended loop from running off a cliff.
+The honest read of that week: the loudest idea in AI coding was one most people repeating it could not define or demonstrate. Crank is my attempt to actually define it and ship it, as a working skill, with the things the hype keeps skipping: a verifier that is harder to fool than the builder, a stopping discipline that keeps an unattended loop from running off a cliff, and a memory file that means run N+1 starts smarter than run N.
 
 It is not new magic and it is not just a cron job. It is a loop with a decision-maker in the body and a frame around it so the decision does not run off a cliff.
 
@@ -53,8 +53,8 @@ The cycle each round: **ORIENT → FRAME → DECOMPOSE → EXECUTE → RED-TEAM 
 
 - **FRAME** writes the contract before spending tokens: a `BRIEF.md`, 5 to 10 *binary* acceptance criteria, the 10x definition, the anti-criteria (what would make it slop even if it looked done), and a round budget.
 - **DECOMPOSE** dispatches a fleet, one specialist per independent workstream.
-- **RED-TEAM** is the honesty gate. By default it is a *cold, separate agent* that sees the criteria and the artifacts but not the builder's reasoning, and is told to fail the work. The author grading its own homework is not verification.
-- **DECIDE** runs a confidence check on every criterion (would you bet on it passing real human review?) and either stops, loops with a specific improvement hypothesis, or downgrades a criterion honestly and says so.
+- **RED-TEAM** is the honesty gate. By default it is a *cold, separate agent* that sees the criteria and the artifacts but not the builder's reasoning, and is told to fail the work. The author grading its own homework is not verification. The verifier's verdict gates the stop: the loop cannot declare done while any criterion fails, and a fresh verifier is spawned each round so it never starts grading its own consistency.
+- **DECIDE** investigates *why* a criterion failed before iterating on it, then loops with a specific improvement hypothesis, classified as structural (change the approach) or scalar (turn a knob). Far from passing, it prefers the structural bet, and gives a structural bet that regresses one round of follow-through before reverting. Or it downgrades a criterion honestly and says so.
 
 ### Scheduled Mode (`/diy-loop scheduled ...`)
 
@@ -70,9 +70,11 @@ The same loop with the human pulled out of the room. Launched by a scheduler or 
 
 ---
 
-## The two things the hype skips
+## The three things the hype skips
 
-**Verification is the moat, not the loop.** Everyone is selling the loop. The loop is plumbing. The defensible part is the verifier: a separate adversary, with context isolation, that is trying to fail the work, run *before* the result reaches you. Self-verification is the author being too nice grading its own homework.
+**Verification is the moat, not the loop.** Everyone is selling the loop. The loop is plumbing. The defensible part is the verifier: a separate adversary, with context isolation, that is trying to fail the work, run *before* the result reaches you. Self-verification is the author being too nice grading its own homework. This is no longer just my position: Anthropic's published loop experiments (Lance Martin, June 2026) found a verifier subagent outperforms self-critique because grading happens in an independent context window, and their hosted Outcomes feature gates stopping on a separate grader, which is exactly the shape Crank ships. The capture is in [`research/`](research/).
+
+**Memory is the outer loop.** A single run loops until the verifier passes; `LEARNINGS.md` loops across runs. The progression is fail, investigate, verify, distill, consult: a failure gets diagnosed before it gets retried, the diagnosis gets verified, the verified fact gets distilled into a general rule at handoff, and the next run reads the rules at orientation instead of re-deriving them. Only verified rules earn a line; a pile of failure notes and open guesses is the failure mode, not memory. This is the part of the loops discourse almost nobody is shipping.
 
 **It is designed not to deskill its operator.** Every run ends with a mandatory DIY Addendum: a short, honest note headed *"What you'd need to do this yourself"* that names the specific skills, tools, and judgement the loop just bundled. The faster a loop ships code you did not write, the bigger the gap between what exists and what you actually understand. That gap is comprehension debt, and a smooth loop grows it faster. The Addendum keeps the capability transfer honest, so the loop never quietly leaves you more served and less able.
 
