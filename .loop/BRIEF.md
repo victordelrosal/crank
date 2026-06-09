@@ -1,8 +1,8 @@
-# BRIEF: Director Mode repo + launch post
+# BRIEF: Crank repo + launch post
 
-This repo was itself built in Director Mode. This is the round-zero contract.
+This repo was itself built in Crank. This is the round-zero contract.
 
-WHAT:         A public GitHub repo for Director Mode (the /diy-loop skill incl. the new scheduled argument): README with ASCII banner, the working skill, a visual landing page, research provenance, MIT license; plus a humanized LinkedIn launch post in Victor's voice.
+WHAT:         A public GitHub repo for Crank (the /diy-loop skill incl. the new scheduled argument): README with ASCII banner, the working skill, a visual landing page, research provenance, MIT license; plus a humanized LinkedIn launch post in Victor's voice.
 WHY:          The "design loops, not prompts" discourse hit millions of views in early June 2026. Victor has a working, disciplined instance of the idea. Ship it as open source while the topic is hot, and tell the story honestly in his voice.
 WHO:          Developers and AI-curious builders reading the loops discourse; Victor's LinkedIn audience (AI for business, practitioners).
 CRITERIA:     see CRITERIA.md
