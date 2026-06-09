@@ -43,7 +43,7 @@ The prompt is the cheap part now. The art is almost entirely in parts 3 and 4. *
 
 ## The two modes
 
-Crank ships as one skill, `/diy-loop`, with two ways to run it.
+Crank ships as one skill, `/crank` (with `/diy-loop` as a legacy alias), with two ways to run it.
 
 ### Interactive mode (default)
 
@@ -56,7 +56,7 @@ The cycle each round: **ORIENT → FRAME → DECOMPOSE → EXECUTE → RED-TEAM 
 - **RED-TEAM** is the honesty gate. By default it is a *cold, separate agent* that sees the criteria and the artifacts but not the builder's reasoning, and is told to fail the work. The author grading its own homework is not verification. The verifier's verdict gates the stop: the loop cannot declare done while any criterion fails, and a fresh verifier is spawned each round so it never starts grading its own consistency.
 - **DECIDE** investigates *why* a criterion failed before iterating on it, then loops with a specific improvement hypothesis, classified as structural (change the approach) or scalar (turn a knob). Far from passing, it prefers the structural bet, and gives a structural bet that regresses one round of follow-through before reverting. Or it downgrades a criterion honestly and says so.
 
-### Scheduled Mode (`/diy-loop scheduled ...`)
+### Scheduled Mode (`/crank scheduled ...`)
 
 The same loop with the human pulled out of the room. Launched by a scheduler or cron, it runs while you are away and has to survive a closed laptop and a cold context. This is the difference between a loop you *kick off* and a loop that is *running*. Three things become mandatory the moment no one is watching:
 
@@ -66,7 +66,7 @@ The same loop with the human pulled out of the room. Launched by a scheduler or 
 
 > Scheduling and durability ship together or not at all. A loop that wakes on a timer without crash-safe state and an enforced ceiling is how an unattended run burns a budget and loses its place at the same time.
 
-**Status:** scheduled mode is new and not yet hardened across many real unattended runs. Crank does not ship its own scheduler; the heartbeat comes from Claude Code's own `/schedule`, `/loop`, or cron, which invokes `/diy-loop scheduled ...` on your cadence. Start with a low ceiling and a small, reversible task, and watch the approvals queue before trusting it with anything expensive or long-running.
+**Status:** scheduled mode is new and not yet hardened across many real unattended runs. Crank does not ship its own scheduler; the heartbeat comes from Claude Code's own `/schedule`, `/loop`, or cron, which invokes `/crank scheduled ...` on your cadence. Start with a low ceiling and a small, reversible task, and watch the approvals queue before trusting it with anything expensive or long-running.
 
 ---
 
@@ -100,21 +100,23 @@ Crank is a Claude Code skill.
 
 ```bash
 git clone https://github.com/victordelrosal/crank.git
-mkdir -p ~/.claude/skills/diy-loop
-cp crank/skill/SKILL.md ~/.claude/skills/diy-loop/SKILL.md
+mkdir -p ~/.claude/skills/crank
+cp crank/skill/SKILL.md ~/.claude/skills/crank/SKILL.md
 ```
 
 Then in any Claude Code session:
 
 ```
-/diy-loop turn this research report into a publishable pitch package, make me proud
+/crank turn this research report into a publishable pitch package, make me proud
 ```
 
 or, to run it unattended on a heartbeat:
 
 ```
-/diy-loop scheduled babysit my open PRs overnight; auto-fix build breaks, queue anything that needs my call
+/crank scheduled babysit my open PRs overnight; auto-fix build breaks, queue anything that needs my call
 ```
+
+Upgrading from an earlier install at `~/.claude/skills/diy-loop/`? Either delete that folder, or leave a one-line alias SKILL.md in it pointing at `crank` so `/diy-loop` keeps working.
 
 ### Companion pieces
 
@@ -123,7 +125,7 @@ Crank sits on top of two smaller habits it expects to exist:
 - **`/diy`**: locks the agent into autonomous execution with no clarifying questions back to you. Without it, the director starts asking questions mid-loop and defeats the point.
 - **`/bet-weights`**: the per-round confidence check ("would you bet your weights on this being right?"). It is the calibration framing that stops the director marking its own work soft.
 
-The chain is: `/diy` (no questions) → `/diy-loop` (self-set criteria + loop + gates) → `/bet-weights` (per-round honest judge).
+The chain is: `/diy` (no questions) → `/crank` (self-set criteria + loop + gates) → `/bet-weights` (per-round confidence report; the cold verifier is the judge).
 
 See [`docs/index.html`](docs/index.html) for a visual side-by-side of the two modes, and [`research/`](research/) for the source material from the June 2026 loops discourse.
 

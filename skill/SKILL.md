@@ -1,24 +1,24 @@
 ---
-name: diy-loop
+name: crank
 description: >-
   Crank. Use when Victor hands over the wheel and wants you to set the direction, prompt
   yourself, and run end-to-end until the work is 10x what he would have asked for. Triggers:
   "self prompt and loop", "set your own acceptance criteria", "loop til satisfied", "be the
   director", "you decide the direction", "fleet of agents", "10x or 100x work", "make me proud",
   "your absolute best work", "explore meaning", "surprise me", "you're on your own", "run this on
-  a loop", or "/diy-loop". Also fires when /diy is invoked together with any language that implies
+  a loop", "/crank", or the legacy alias "/diy-loop". Also fires when /diy is invoked together with any language that implies
   the acceptance criteria are yours to set. You grasp Victor's intent, write your own binary
   acceptance criteria (and a PRD when the work warrants one), dispatch a fleet, run a
   plan-execute-red-team-decide loop scored by /bet-weights, and STOP for a human before anything
   irreversible or outward-facing. Supersedes the older loop-til-satisfied and diy-director skills.
   Default invocation is interactive Crank (you, present, between rounds). Pass the
-  `scheduled` argument ("/diy-loop scheduled ...", aliases "live", "cron", "unattended", "on a
+  `scheduled` argument ("/crank scheduled ...", aliases "live", "cron", "unattended", "on a
   heartbeat", "run nightly", "while I'm away") to run the same loop unattended on a heartbeat:
   human gates become an async approval queue, a hard token/dollar ceiling aborts the run, and
   crash-safe STATE.json lets a cron-fired cold start resume.
 ---
 
-# Crank (the `/diy-loop` skill)
+# Crank (the `/crank` skill; `/diy-loop` is the legacy alias)
 
 This is what to invoke when Victor hands over the wheel and says, in effect: "you decide what
 good looks like, you decide how many rounds, you direct the fleet, you prompt yourself instead
@@ -222,7 +222,7 @@ Everything reversible and internal (drafting, exploring, building, refactoring, 
 iterating) proceeds without asking. The gate is about irreversibility and reach, not permission
 to think. When in doubt about reach: draft it, then gate the send.
 
-## Scheduled mode (`/diy-loop scheduled`): running unattended on a heartbeat
+## Scheduled mode (`/crank scheduled`): running unattended on a heartbeat
 
 Crank runs interactively by default: Victor is present between rounds, and a STOP gate pauses
 the loop in-session until he answers. Scheduled mode is the same loop with the human pulled out
@@ -369,22 +369,22 @@ Done when: <the criteria this pass must satisfy>
 ## Integration with /diy and /bet-weights
 
 This skill sits on top of /diy. /diy locks the active persona (Claudus, Lars, Theo, Felix, etc.)
-into autonomous execution with no clarifying questions back to Victor. diy-loop adds the self-set
+into autonomous execution with no clarifying questions back to Victor. Crank adds the self-set
 criteria, the optional PRD, and the multi-round loop on top of that lock. /bet-weights is the
-per-round judge that prevents the director from marking their own work soft. Always lock /diy if
-it is not already locked; without it, the director will start asking questions mid-loop and defeat
-the entire point. The chain is: /diy (no questions) → diy-loop (self-criteria + loop + gates) →
-/bet-weights (per-round honest judge).
+per-round calibration label that keeps the reported confidence honest (the cold verifier, not
+bet-weights, is the gate). Always lock /diy if it is not already locked; without it, the director
+will start asking questions mid-loop and defeat the entire point. The chain is: /diy (no
+questions) → /crank (self-criteria + loop + gates) → /bet-weights (per-round confidence report).
 
 ## Example invocations
 
-1. **Netflix pitch from a research report.** "/diy-loop turn the Quiet Extinction report into a
+1. **Netflix pitch from a research report.** "/crank turn the Quiet Extinction report into a
    Netflix limited-series pitch package, make me proud." Criteria: pitch deck 12-18 slides
    (logline, world, characters, season arc, comps, tone reel); pilot script 25+ pages in teleplay
    format; series bible 8+ pages; comps section names 3 precedents with revenue data. Fleet:
    scriptwriter, world-builder, deck-designer, market-analyst. Three rounds, /bet-weights each.
 
-2. **Pricing-page rebuild.** "/diy-loop rebuild the Agentive pricing page, your absolute best
+2. **Pricing-page rebuild.** "/crank rebuild the Agentive pricing page, your absolute best
    work." Criteria: above-fold conversion clarity, mobile responsive, per-seat math worked
    example, EU AI Act Article 4 framing, benchmarks, FAQ coverage, WCAG AA, one named outcome.
    Fleet: copywriter, renzo-landing designer, market-benchmarker, accessibility-auditor.
@@ -407,4 +407,6 @@ multi-round loop) and `diy-director` (the values compass + the irreversible-acti
 into one super-skill where the director auto-prompts end-to-end, grasps the intent, may write a
 PRD, sets its own acceptance criteria, and protects every irreversible outward-facing decision
 behind a human gate. The discipline (self-set criteria + loop + bet-weights + honest downgrades +
-hard STOP gates) is the difference between Crank shipping and Crank pretending.
+hard STOP gates) is the difference between Crank shipping and Crank pretending. On 2026-06-09 the
+skill took its public name: installed as `crank`, invoked as `/crank`, with `/diy-loop` kept as a
+legacy alias.
