@@ -24,7 +24,7 @@ Verification is the moat, not the loop. The loop is plumbing. A loop with a weak
 
 And a good loop shouldn't quietly deskill you. The faster it ships code you didn't write, the wider the gap between what exists and what you actually understand. I don't want to wake up unable to explain my own system.
 
-So I built one and put it on GitHub. I call it Crank. It's a Claude Code skill that sets its own acceptance criteria, runs a small fleet of agents, and then hands the work to a separate agent whose only job is to try to fail it before it reaches me. One run checked 14 podcast episodes against their own canon in 44 seconds. I never read a single episode. I just described what "wrong" looked like, and the loop did the reading for me.
+So I built one and put it on GitHub. I call it Crank, because that is the whole idea: you turn it once and it runs the loop for you. It's a Claude Code skill that sets its own acceptance criteria, runs a small fleet of agents, and hands the work to a separate agent whose only job is to try to fail it before it reaches me. One run checked 14 podcast episodes against their own canon in 44 seconds. I never read a single episode. I just described what "wrong" looked like, and the loop did the reading for me.
 
 That's the shift in one line. Stop being the thing inside the loop. Build the loop, give it a check it can't talk its way past, and stay the engineer.
 
