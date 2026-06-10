@@ -92,7 +92,12 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
   representative sample (a screen, a page, an excerpt) and get a nod before spending the
   remaining rounds; in scheduled mode, park the direction check in `PENDING-APPROVALS.md` and
   continue only the environment-checkable workstreams until it clears. This is a checkpoint
-  gate, not a clarifying question, so it does not violate the /diy lock.
+  gate, not a clarifying question, so it does not violate the /diy lock. And be willing to
+  conclude the work is not loop-shaped at all: if it is both one-off *and* almost entirely
+  judgment-checkable (a single bespoke artifact where "done" is a taste call), a loop has
+  nothing objective to converge on and will just amortize its setup over a vision it is guessing
+  at. Say so plainly and offer one well-aimed pass with a single red-team instead of a
+  multi-round loop. Looping is the tool here; it is not a tax every task has to pay.
 - **A PRD when the work warrants one** (a product, a feature, a multi-asset launch, anything a
   builder would need a spec for). Use the `sophie-prd` skill for the shape. For a one-off
   artifact, the BRIEF plus CRITERIA is enough; do not manufacture a PRD for small work.
@@ -291,6 +296,25 @@ queue of pending gates; and the single next action. On wake, read `STATE.json` f
 reconstruct which criteria still fail, and continue from the last DECIDE. The prose log stays for
 the human to audit; `STATE.json` is the resume contract for the machine. If it is missing or
 stale, fall back to re-reading BRIEF/CRITERIA/log and rebuild it before doing any work.
+
+**4. The security tax: an unattended loop is an unattended attack surface.** Interactively,
+Victor's eyes are the last line of defense; unattended, the loop is exposed for hours with no
+one watching, so the gate itself has to carry the security review the human used to. Four
+disciplines, all mandatory in this mode:
+- **The gate includes a security check, not just a correctness one.** If a workstream produces
+  code or config that could ship, the verifier's pass must include secret scanning, a dependency
+  audit, and a basic SAST pass, not only "tests green". A loop that opens PRs faster than a human
+  reads them will merge an injected secret or a vulnerable dependency on a green test alone.
+- **Audit skill and connector sources before the loop uses them.** A loop that auto-reaches for
+  a skill or MCP connector inherits every prompt injection hiding in its description. In
+  unattended mode, only use skills and connectors already vetted and present in the workspace;
+  never let a scheduled run install or fetch a new one on its own.
+- **Sanitize what gets logged.** Long unattended runs scatter output across logs no one is
+  reading. Keep verbose/debug logging off in scheduled mode and redact anything credential-shaped
+  before it lands in the director's log, `STATE.json`, or `PENDING-APPROVALS.md`.
+- **Least privilege, re-audited.** The loop runs with the narrowest permission scope the task
+  needs, and write/network scope added "just for this run" is removed at handoff, never left
+  standing. Re-state the loop's actual permission scope in the handoff so scope creep is visible.
 
 Scheduling and durability ship together or not at all: a loop that wakes on a timer without
 crash-safe state and an enforced ceiling is how an unattended run burns a budget and loses its
