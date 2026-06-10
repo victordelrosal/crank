@@ -82,6 +82,17 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
   not an opinion. Reserve judge-checkable criteria for the genuinely tasteful calls, and even
   then name the rubric. Criteria are frozen at FRAME; any mid-run edit to a criterion is a
   downgrade and follows the downgrade rules.
+- **Loop-fitness check.** Once the criteria are written, look at the ratio. If most are
+  environment-checkable, the task is loop-shaped: run the full budget. If most are
+  judge-checkable (taste, tone, design, product feel), the feedback signal is soft and the loop
+  will converge on its own assumptions instead of Victor's vision; the field's working loops
+  (code review against a scorer, templated generation) all have fixed feedback, and
+  vision-heavy work is where loops are documented to fail. Respond by shortening the budget
+  and inserting a **direction checkpoint after round 1**: interactively, show Victor one
+  representative sample (a screen, a page, an excerpt) and get a nod before spending the
+  remaining rounds; in scheduled mode, park the direction check in `PENDING-APPROVALS.md` and
+  continue only the environment-checkable workstreams until it clears. This is a checkpoint
+  gate, not a clarifying question, so it does not violate the /diy lock.
 - **A PRD when the work warrants one** (a product, a feature, a multi-asset launch, anything a
   builder would need a spec for). Use the `sophie-prd` skill for the shape. For a one-off
   artifact, the BRIEF plus CRITERIA is enough; do not manufacture a PRD for small work.
@@ -109,6 +120,14 @@ Do the work in the smallest reversible steps that still move fast. Verify as you
 code, check the fact, test the edge case. Checkpoint progress (commit, save the artifact) so a
 bad round is cheap to roll back. Prefer making the real thing over describing the real thing.
 
+**Keep an assumption ledger.** Every time the builder decides something the BRIEF does not
+specify (an architecture choice, a tone, a look, a scope call), log it in one line in the
+director's log under `ASSUMPTIONS`. A plan never captures the whole vision; the agent fills the
+gaps, and unlogged assumptions are where vision drift hides. The ledger makes the gap-filling
+visible so Victor can correct it in thirty seconds at the handoff instead of discovering it in
+the artifact. Logging an assumption is not a license to skip the gates: an assumption that
+touches money, reach, or irreversibility is still a STOP.
+
 ### 5. RED-TEAM and SELF-EVALUATE (the honesty gate)
 **When subagents exist, this is not self-assessment, it is evaluation.** The author's context is
 compromised by definition: it knows what it intended, so it scores intent, not output. So the
@@ -131,6 +150,13 @@ Two rules keep the verifier honest:
   work. Spawn a new cold agent each round with only `CRITERIA.md` and the current artifacts.
 - For each failed criterion, the verifier states the evidence of failure (the command output, the
   line, the missing artifact), not just the verdict, so the next round has something to aim at.
+- **Cap the verifier's payload.** A verifier handed more than it can actually contextualize in
+  one cold read (the field's empirical line for code review is roughly 1,000 changed lines)
+  stops grading and starts skimming, and its verdict goes noisy in both directions. Scope each
+  verification to the criterion: hand the verifier only the artifacts that criterion needs, and
+  if a round's output is too large to grade in one cold context, split the verification into
+  multiple scoped passes (or multiple verifiers) rather than one overloaded one. Plan EXECUTE
+  checkpoints with this in mind: rounds that produce verifier-sized increments grade cleanly.
 
 Switch fully into hostile-critic mode. Your job here is to fail the work, not defend it.
 - Score every acceptance criterion: pass / fail / partial, with evidence (the test output, the
@@ -336,6 +362,8 @@ Then produce one integration summary, scannable in 30 seconds:
   alongside the verifier verdict, flagging any passed criterion where your confidence is low.
 - **One-paragraph honest assessment**. No marketing voice. What it is, what is strong, what is
   fragile.
+- **The assumption ledger**: every gap-filling call the builder made beyond the BRIEF, one line
+  each, so Victor can spot vision drift at a glance and correct it cheaply.
 - **Absolute paths** to every artifact produced.
 - **The single weakest link** and how to strengthen it next, if Victor wants another pass.
 - **The DIY Addendum** (mandatory): a short closing note, one sentence to one short paragraph,
