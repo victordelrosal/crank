@@ -83,6 +83,13 @@ has no human in the loop, so reality plays that part: the explain-back is checke
 artifacts, not against Victor. Greenfield work compresses this to a sentence; brownfield work
 never skips it.
 
+**Baseline before you improve.** When the mission is improvement-shaped ("optimize X", "make Y
+faster", "lift the quality of Z"), measure or run the unmodified starting state at Round 0 and
+record it in `LOG.md` before changing anything. Every later claim of improvement is proved
+against that baseline, not against memory of it. Karpathy's autoresearch makes the baseline
+run of the untouched script mandatory before any mutation, for exactly this reason (captured
+in research/loop-benchmark-2026-07.md).
+
 **Know which model is running.** Note the model at ORIENT and match the scaffolding to it. On a
 non-Fable model (Opus, Sonnet, Haiku), load the `fable-mind` skill before FRAME and let
 `fable-effort-triage` own the loop-fitness call: the loop's structure is doing more of the work,
@@ -144,9 +151,9 @@ Every criterion gets a named owner, even if the owner is "self".
   multi-stage pipelines, use the Workflow tool; for a handful of independent tasks, use parallel
   Agent calls. A fleet of three sharp specialists beats seven generalists every time.
   Instruct every builder to open its report with a three-line readback: what it understood the
-  brief to be, the approach it took, and the assumptions it made. The director audits the
-  readback against the BRIEF before reading the build; a wrong readback caught in three lines
-  is a round saved.
+  brief to be, the approach it took and how the criteria it owns will be verified, and the
+  assumptions it made. The director audits the readback against the BRIEF before reading the
+  build; a wrong readback caught in three lines is a round saved.
 - **Without subagents (plain chat)**: run workstreams as sequential passes and adopt distinct
   hats deliberately: Builder, then Critic, then Editor. The separation is the point. The Builder
   may be ambitious; the Critic must be brutal.
@@ -190,11 +197,20 @@ subagent outperforms self-critique precisely because grading happens in an indep
 window, and their hosted equivalent (CMA Outcomes) will not let the agent stop until the grader
 passes the rubric.
 
-**Scripts before verifiers.** Run every mechanical check (file existence, frontmatter validity,
-counts and caps, style law such as the em-dash ban, link resolution) as a cheap script BEFORE
-spawning the cold verifier. Verifiers grade judgment; scripts grade mechanics. A verifier that
-burns its one cold read catching defects a five-line script would have caught has wasted the
-most expensive attention in the loop.
+**Scripts before verifiers, and scripts as a gate.** Run every mechanical check (file
+existence, frontmatter validity, counts and caps, style law such as the em-dash ban, link
+resolution) as a cheap script BEFORE spawning the cold verifier, and treat the suite as a
+blocking gate, not advice: a round does not reach the verifier until its scripts pass.
+Verifiers grade judgment; scripts grade mechanics. A verifier that burns its one cold read
+catching defects a five-line script would have caught has wasted the most expensive attention
+in the loop.
+
+**The evaluation surface is frozen.** The check scripts, the verifier's instructions, and the
+criteria they enforce are part of the contract, and the builder does not touch them. A fix
+that edits the test instead of the work is a downgrade in disguise and follows the downgrade
+rules (written, surfaced, never silent). This is Karpathy's anti-cheat rule (the eval function
+is unmodifiable) and Anthropic's harness law ("unacceptable to remove or edit tests") in
+Crank's terms.
 
 These rules keep the verifier honest:
 - **The verifier's verdict gates the stop.** The loop cannot declare done while the cold verifier
@@ -204,6 +220,12 @@ These rules keep the verifier honest:
 - **Fresh verifier every round.** Never reuse a verifier's context across rounds: a verifier that
   remembers its last verdict anchors on it and starts grading its own consistency instead of the
   work. Spawn a new cold agent each round with only `CRITERIA.md` and the current artifacts.
+- **The verifier drives the artifact.** For anything runnable (a page, an app, a script, a
+  pipeline), the verifier exercises it the way a user would (load it, click it, run it,
+  feed it the edge case) and grades the observed behavior; reading the source is not
+  verification of a runnable thing. Evidence is the screenshot, the output, the rendered
+  state. Anthropic's harness experiments converged on the same law: the evaluator functionally
+  tests as a human user, and self-grading without execution is systematically lenient.
 - For each failed criterion, the verifier states the evidence of failure (the command output, the
   line, the missing artifact), not just the verdict, so the next round has something to aim at.
 - **Fixed verdict format.** Instruct every verifier to return exactly: (1) a verdict table, one
@@ -262,7 +284,14 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
   sharper-angled agent, (c) restart the build from the frozen contract when the contract is sound
   but the build itself has become the mess and throwing it away is cheaper than untangling it
   (interactive mode only, never in scheduled mode, since deleting work on a model's judgment with
-  no human in the room is a foot-gun), or (d) downgrade the criterion with a written rationale.
+  no human in the room is a foot-gun), (d) downgrade the criterion with a written rationale, or
+  (e) fork the bet: when a criterion has resisted two rounds of single-path iteration, or a
+  structural bet is genuinely uncertain, spawn two or three parallel candidates with
+  deliberately different angles and let the fresh cold verifier pick the winner. Branching
+  beats iterating harder once a lineage is stuck (the tree-search and archive-and-branch
+  results in research/loop-benchmark-2026-07.md); it also costs multiples, so fork only when
+  the stuck round has already paid for the evidence that iteration is not working, and prefer
+  it interactively where tokens are flat-rate.
 - **Budget exhausted or diminishing returns**: stop honestly. Report what is strong, what is
   weak, what the next real leap would require. A truthful "here is where it stands" beats a fake
   "10x achieved". Better to ship 8/10 criteria honestly than fake-ship 10/10.
@@ -294,6 +323,7 @@ write in a minute:
 ```
 ## Round 0 (date)
 GROUNDING:    <the explain-back: how the system actually works, each claim VERIFIED or ASSUMED>
+BASELINE:     <improvement-shaped missions only: the measured starting state>
 
 ## Round N (date)
 HYPOTHESIS:   <this round's improvement bet, marked structural or scalar>
@@ -475,6 +505,12 @@ ORIENT consults the file at the start of the next run. Discipline for the file:
   `~/.claude/crank/LEARNINGS.md` as well as, or instead of, the workspace file, so every future
   run in every project inherits it. Same discipline applies there: verified rules only, prune
   on write.
+- **Distill tools, not only rules.** If the run built a reusable instrument (a check script, a
+  verifier prompt, a template, a scraper), promote it: workspace tools to `.loop/tools/`,
+  craft-grade tools to `~/.claude/crank/tools/`, and reference each from the LEARNINGS line
+  that explains when to reach for it. Prose rules transfer judgment; tools transfer
+  competence, and a future run that reuses a verified script starts from capability instead
+  of re-deriving it (the skill-library result: Voyager, Agent Workflow Memory).
 - Keep it short: one line per rule, the file readable in under a minute. If a run produced no
   rule worth keeping, write nothing; most rounds will not.
 

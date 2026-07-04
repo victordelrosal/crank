@@ -79,3 +79,64 @@ DECIDE:       fix all 5 before ship. Defect 1 fixed by renaming this file to LOG
               with a scope extension (Karpathy autoresearch + broader loop-approach
               benchmarking), which extends the contract; BRIEF v2 + criteria 13-16 appended
               as a documented contract extension.
+
+## Round 2 (2026-07-04, contract extension: field benchmark)
+HYPOTHESIS:   structural: benchmark Crank against the wider field (3 parallel research
+              agents: Karpathy autoresearch incl. local skills + primary repo; practitioner
+              harnesses Ralph/MemoryBank/SpecKit/Kiro/BMAD/TaskMaster/Anthropic v1+v2;
+              academic Reflexion/LATS/Voyager/SelfRefine/SWE-agent/OpenHands/DSPy/GEPA/
+              DGM/AI-Scientist/AlphaEvolve/STOP/AWM), absorb only the mechanisms Crank lacks.
+DID:          research/loop-benchmark-2026-07.md (eighth capture, 23 approaches, all sources
+              fetch-verified); 6 edits to SKILL.md: (1) Baseline before you improve [ORIENT],
+              (2) scripts as blocking gate + frozen evaluation surface [RED-TEAM], (3) the
+              verifier drives the artifact [RED-TEAM], (4) DECIDE option (e) fork best-of-N,
+              (5) distill tools not only rules -> .loop/tools/ + ~/.claude/crank/tools/
+              [handoff], (6) readback gains a verification clause [DECOMPOSE].
+
+PANEL (round 2): Theo: take the mechanical cheap ones (baseline, frozen eval, script gate);
+reject state-file duplicates (MemoryBank hierarchy, SpecKit constitution), BRIEF/COMPASS own
+those slots. Lars: strongest-evidenced delta is verifier-drives-the-artifact (Anthropic v1
+e2e-as-user + v2 Playwright skeptic + SWE-agent/OpenHands convergence); promotes the
+blank-engine rule into Crank law. Mythos: steal the two asymmetries: memory should hold
+executable competence not only prose (Voyager/AWM), and stuck lineages should branch not
+iterate (LATS/DGM small-N kernel); reject Karpathy's never-stop directive, it is the failure
+the gates exist to prevent. Claudus: sprint contract folds into the readback for one clause.
+
+BET-WEIGHTS (round 2):
+| Delta | Bet | Verdict |
+|---|---|---|
+| Baseline before you improve (Karpathy) | 85% | ACCEPT |
+| Frozen eval surface + script gate (Karpathy + Anthropic/Kiro) | 85% | ACCEPT |
+| Verifier drives the artifact (Anthropic v1/v2) | 82% | ACCEPT |
+| Distill tools, not only rules (Voyager/AWM) | 80% | ACCEPT |
+| DECIDE (e) fork best-of-N (LATS/DGM kernel) | 72% | ACCEPT, cost-caveated |
+| Readback verification clause (Anthropic v2 sprint contract) | 65% | ACCEPT, one clause |
+| Never-stop directive (Karpathy) | 5% | REJECT |
+| Single-scalar fitness | 15% | REJECT |
+| Full MCTS / population evolution | 10% | REJECT (small-N kernel taken) |
+| MemoryBank 6-file hierarchy / SpecKit constitution | 20% | REJECT (duplicate state drifts) |
+| EARS notation | 15% | REJECT (binary criteria same job) |
+| Backpressure asymmetry as skill text (Ralph) | 35% | REJECT (Workflow doctrine owns it) |
+
+ASSUMPTIONS:  benchmark table kept to one row per approach (the research agents' full raw
+              returns live in the session, not the repo); Fortune/X secondary coverage of
+              autoresearch marked UNVERIFIED in the capture and excluded from claims.
+VERDICT:      verifier #2 (fresh, no context from #1): C14 PASS (all 6 deltas diff-traceable
+              to named verified sources; bets recorded for accepted AND rejected), C7 PASS
+              (0 em dashes, register holds), C8 PASS (byte-identical), C13 PARTIAL (6 of 23
+              approaches unmapped; spot-checked sources all real). 5 defects: false
+              UNVERIFIED claim in this LOG entry (mark never written into the capture);
+              6 unmapped approaches; baseline rule pointed at a LOG slot that did not exist;
+              escalation-ladder attribution missing its best-practices URL; "never pause"
+              quoted loosely.
+DECIDE:       appended below.
+
+DECIDE (round 2, final): all 5 defects fixed: UNVERIFIED block now actually written into the
+benchmark capture (the LOG claim is true AFTER the fix; verifier #2 caught me writing the
+claim from intention, the exact failure the global write-from-the-diff LEARNINGS rule names);
+all 6 unmapped approaches (ClineFlow, BMAD, Task Master, Self-Refine, DSPy, GEPA) mapped in
+the covered-before section; BASELINE field added to the Round 0 LOG template; best-practices
+URL added to the v2 row; "never pause" replaced with the program.md-sourced phrasing.
+C13 upgraded per-approach coverage 23/23. Dogfood: mechanical gate distilled to
+.loop/tools/check.sh per the new tools doctrine. STOP: budget round 2 of 2 extension used,
+verifier verdicts recorded, ship: commit + push + /html before/after page.

@@ -21,3 +21,10 @@ DOWNGRADES:   C10 (HTML page) may ship after the verifier round rather than insi
 
 Known repair discovered at ORIENT: installed skill is ahead of repo copy (2026-07-02 edits
 never synced to sBs/crank/skill/SKILL.md). Sync is part of this run.
+
+## v2 extension (Victor interjection, 2026-07-04, after round 1 shipped)
+Scope extended: benchmark Crank against the wider field (Karpathy autoresearch, Ralph,
+Memory Bank, spec-driven harnesses, academic self-improvement loops), then execute the
+bet-worthy deltas. Criteria 13-16 appended. Budget: +2 rounds (4 total). Fleet: 3 parallel
+research agents (Karpathy/local, practitioner harnesses, academic mechanisms), director
+synthesis, panel, builder, fresh cold verifier #2.
