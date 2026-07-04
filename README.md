@@ -51,10 +51,11 @@ You hand over the wheel: "you decide what good looks like, direct the fleet, pro
 
 The cycle each round: **ORIENT → FRAME → DECOMPOSE → EXECUTE → RED-TEAM → DECIDE.**
 
+- **ORIENT** grounds before anything is decided. If the work touches an existing system, the loop locates the real artifacts and writes an explain-back of how the thing actually works, marking every load-bearing claim VERIFIED (it looked) or ASSUMED (it inferred), into the run journal (`LOG.md`) before the contract freezes. Improvement-shaped missions also record a measured baseline first, so "better" is provable, not remembered.
 - **FRAME** writes the contract before spending tokens: a `BRIEF.md`, 5 to 10 *binary* acceptance criteria, the 10x definition, the anti-criteria (what would make it slop even if it looked done), and a round budget.
 - **DECOMPOSE** dispatches a fleet, one specialist per independent workstream.
-- **RED-TEAM** is the honesty gate. By default it is a *cold, separate agent* that sees the criteria and the artifacts but not the builder's reasoning, and is told to fail the work. The author grading its own homework is not verification. The verifier's verdict gates the stop: the loop cannot declare done while any criterion fails, and a fresh verifier is spawned each round so it never starts grading its own consistency.
-- **DECIDE** investigates *why* a criterion failed before iterating on it, then loops with a specific improvement hypothesis, classified as structural (change the approach) or scalar (turn a knob). Far from passing, it prefers the structural bet, and gives a structural bet that regresses one round of follow-through before reverting. Or it downgrades a criterion honestly and says so.
+- **RED-TEAM** is the honesty gate. By default it is a *cold, separate agent* that sees the criteria and the artifacts but not the builder's reasoning, and is told to fail the work. The author grading its own homework is not verification. The verifier's verdict gates the stop: the loop cannot declare done while any criterion fails, and a fresh verifier is spawned each round so it never starts grading its own consistency. Mechanical checks run as scripts that gate the round *before* the verifier is spawned, the evaluation surface (criteria, check scripts, verifier instructions) is frozen so a fix can never quietly edit the test instead of the work, and for anything runnable the verifier drives the artifact like a user and grades the observed behavior, never just the source.
+- **DECIDE** investigates *why* a criterion failed before iterating on it, then loops with a specific improvement hypothesis, classified as structural (change the approach) or scalar (turn a knob). Far from passing, it prefers the structural bet, and gives a structural bet that regresses one round of follow-through before reverting. When a criterion has resisted two rounds of single-path iteration, it forks the bet: two or three parallel candidates with different angles, and the fresh verifier picks the winner. Or it downgrades a criterion honestly and says so.
 
 ### Scheduled Mode (`/crank scheduled ...`)
 
@@ -74,9 +75,48 @@ The same loop with the human pulled out of the room. Launched by a scheduler or 
 
 **Verification is the moat, not the loop.** Everyone is selling the loop. The loop is plumbing. The defensible part is the verifier: a separate adversary, with context isolation, that is trying to fail the work, run *before* the result reaches you. Self-verification is the author being too nice grading its own homework. This is no longer just my position: Anthropic's published loop experiments (Lance Martin, June 2026) found a verifier subagent outperforms self-critique because grading happens in an independent context window, and their hosted Outcomes feature gates stopping on a separate grader, which is exactly the shape Crank ships. The capture is in [`research/`](research/).
 
-**Memory is the outer loop.** A single run loops until the verifier passes; `LEARNINGS.md` loops across runs. The progression is fail, investigate, verify, distill, consult: a failure gets diagnosed before it gets retried, the diagnosis gets verified, the verified fact gets distilled into a general rule at handoff, and the next run reads the rules at orientation instead of re-deriving them. Only verified rules earn a line; a pile of failure notes and open guesses is the failure mode, not memory. This is the part of the loops discourse almost nobody is shipping.
+**Memory is the outer loop.** A single run loops until the verifier passes; `LEARNINGS.md` loops across runs, and it holds tools, not only lessons: a reusable check script or verifier prompt built mid-run gets promoted to a tools folder at handoff, so the next run starts from competence instead of re-deriving it. The progression is fail, investigate, verify, distill, consult: a failure gets diagnosed before it gets retried, the diagnosis gets verified, the verified fact gets distilled into a general rule at handoff, and the next run reads the rules at orientation instead of re-deriving them. Only verified rules earn a line; a pile of failure notes and open guesses is the failure mode, not memory. This is the part of the loops discourse almost nobody is shipping.
 
 **It is designed not to deskill its operator.** Every run ends with a mandatory DIY Addendum: a short, honest note headed *"What you'd need to do this yourself"* that names the specific skills, tools, and judgement the loop just bundled. The faster a loop ships code you did not write, the bigger the gap between what exists and what you actually understand. That gap is comprehension debt, and a smooth loop grows it faster. The Addendum keeps the capability transfer honest, so the loop never quietly leaves you more served and less able.
+
+---
+
+## Crank cranked Crank (the 2026-07-04 self-upgrade)
+
+On 4 July 2026 the loop was pointed at itself, twice in one morning, and the upgrade shipped
+only because two fresh hostile verifiers passed it. The full run record is public in this
+repo: the contract and journal in [`.loop/`](.loop/), the source captures in
+[`research/`](research/).
+
+**Round 1** absorbed Hassan Uriostegui's "Stop telling the agent what to do" and his
+[ClineFlow](https://github.com/hassanvfx/clineflow) repo. His argument: the expensive bugs
+come from shared misunderstanding, not syntax, so build shared understanding before
+implementation. Crank has no human in the loop to align with, so the translation is that
+reality plays the human's part: ground-before-frame at ORIENT, plan-grounding before any
+build, a three-line builder readback, the run journal formally specified as `LOG.md`
+(round 1 caught Crank's own manual citing a "director's log" that no section defined), and a
+new anti-pattern: optimizing a misunderstood contract.
+
+**Round 2** benchmarked Crank against 23 approaches, every source fetched and verified:
+[Karpathy's autoresearch](https://github.com/karpathy/autoresearch), the Ralph loop, Cline
+Memory Bank, GitHub Spec Kit, AWS Kiro, BMAD, Task Master, both Anthropic long-running-agent
+harness posts, and the academic line (Reflexion, LATS, Voyager, Self-Refine, SWE-agent,
+OpenHands, DSPy, GEPA, Darwin Godel Machine, AI Scientist, AlphaEvolve, STOP, AWM). The
+honest headline: Crank already carried most of the field's load-bearing mechanisms. Six new
+ones cleared the panel: baseline-before-you-improve (Karpathy), scripts as a blocking gate
+plus the frozen evaluation surface (Karpathy's immutable eval, Anthropic's untouchable
+tests, Kiro's deterministic hooks), the verifier drives the artifact (Anthropic v1/v2),
+distill tools not only rules (Voyager, AWM), fork-the-bet best-of-N when iteration is stuck
+(the transferable kernel of LATS and DGM), and a verification clause in the builder readback
+(Anthropic's sprint contract). The full covers-vs-lacks mapping and the rejections, including
+Karpathy's never-stop directive, are in
+[`research/loop-benchmark-2026-07.md`](research/loop-benchmark-2026-07.md).
+
+Two details worth the click. The run found this repo's skill copy three weeks behind the
+installed one and repaired the drift. And the second verifier caught the loop recording a fix
+it had not yet written; the catch, and the correction, are in
+[`.loop/LOG.md`](.loop/LOG.md) verbatim. That is the design working: a check the loop cannot
+talk its way past, even when the work being checked is its own upgrade.
 
 ---
 
@@ -88,6 +128,7 @@ This is not year zero. The honest ladder, oldest to newest:
 - **AutoGPT (2023)** gave it a goal and let it prompt itself, and became famous for spinning forever doing nothing.
 - **The ralph loop (Geoffrey Huntley, 2025)** piped the same prompt file into the agent over and over; its real innovation was resetting context to fixed anchor files each iteration.
 - **`/goal` and `/loop` (2026)** productized the ralph loop until a validator confirms done.
+- **autoresearch (Karpathy, 2026)** pointed the loop at model training: mutate, run under a fixed budget, keep only what beats the metric, with the eval frozen so the loop cannot cheat it.
 - **Orchestration loops (now)** where loops supervise other loops, on a schedule, with durable state.
 
 Crank is the closed-loop, budget-disciplined member of that family. "Closed" in the sense Shann Holmberg drew: a human designs the path, every step has an eval, and there is a defined point where it stops or hands back. Open-ended exploratory loops are exciting and they are a slop machine on a real budget. Crank is built to run on a normal budget and still be trustworthy.
