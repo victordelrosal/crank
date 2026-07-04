@@ -65,15 +65,42 @@ something you genuinely cannot proceed without, ask one sharp question; otherwis
 **Consult before deriving.** If a `LEARNINGS.md` exists in the workspace (or `.loop/LEARNINGS.md`),
 read it before any other planning and apply its rules instead of re-deriving them. That file is
 the distilled output of prior Crank runs (see the memory loop in the final handoff); a rule you
-read costs nothing, a rule you re-derive costs a round.
+read costs nothing, a rule you re-derive costs a round. Also consult the global file
+`~/.claude/crank/LEARNINGS.md`: workspace learnings are project truths, global learnings are
+craft truths that apply to every run anywhere.
+
+**Ground before you frame.** When the work modifies an existing system (a codebase, a live
+page, a corpus, a deployed config), reading about it is not understanding it. Before FRAME
+locks the contract: locate the actual artifacts the work will touch (the call sites, the
+files, the data), then write a short explain-back of how the thing actually works into the
+Round 0 entry of `LOG.md`, marking each load-bearing claim VERIFIED (you looked) or ASSUMED
+(you inferred). Criteria are frozen at FRAME, so a contract written on an ungrounded mental
+model optimizes the wrong thing for the entire run. The field's summary of this failure class
+is that the most expensive bugs come from shared misunderstanding, not syntax (Uriostegui,
+"Stop telling the agent what to do", 2026, and its ClineFlow repo; captured in research/).
+Uriostegui has a human verify the agent's mental model before objectives are introduced; Crank
+has no human in the loop, so reality plays that part: the explain-back is checked against the
+artifacts, not against Victor. Greenfield work compresses this to a sentence; brownfield work
+never skips it.
+
+**Know which model is running.** Note the model at ORIENT and match the scaffolding to it. On a
+non-Fable model (Opus, Sonnet, Haiku), load the `fable-mind` skill before FRAME and let
+`fable-effort-triage` own the loop-fitness call: the loop's structure is doing more of the work,
+so keep every gate at full strength. On a Fable-class model, the discipline still holds but
+FRAME may be compressed for small, well-scoped work; do not add ceremony the model natively
+covers. Either way the gates and the cold verifier never compress.
 
 ### 2. FRAME: self-prompt the contract (write it down before working)
 This is where you prompt yourself instead of waiting for Victor. Produce, in the workspace:
 
 - **`BRIEF.md`** using the round-zero template below. Half a page. It locks the contract before
   you spend tokens.
-- **`CRITERIA.md`**: 5 to 10 binary acceptance criteria. Each is one sentence with a clear
-  yes/no test. Good: "the pilot script is 25+ pages in industry-standard teleplay format with
+- **`CRITERIA.md`**: binary acceptance criteria, each one sentence with a clear yes/no test.
+  Scale the count to the work's shape: code-shaped work wants many granular asserts (a dozen-plus;
+  too few and the evaluator rubber-stamps a weak build), taste-shaped work wants a handful with a
+  named rubric (a long list of judgment calls is theatre that converges on your own assumptions).
+  Five to ten is the usual middle; go higher for code, lower for vision. Good: "the pilot script
+  is 25+ pages in industry-standard teleplay format with
   sluglines, action, dialogue." Bad: "the pilot is good." Draw them from Victor's stated goal
   *and* your read of the intent between the lines. If a criterion cannot be checked yes/no,
   rewrite it until it can. **Prefer environment-checkable over judge-checkable**: a criterion a
@@ -116,18 +143,36 @@ Every criterion gets a named owner, even if the owner is "self".
   the literal fleet. Give each a crisp brief and the criteria it owns. For larger fan-out or
   multi-stage pipelines, use the Workflow tool; for a handful of independent tasks, use parallel
   Agent calls. A fleet of three sharp specialists beats seven generalists every time.
+  Instruct every builder to open its report with a three-line readback: what it understood the
+  brief to be, the approach it took, and the assumptions it made. The director audits the
+  readback against the BRIEF before reading the build; a wrong readback caught in three lines
+  is a round saved.
 - **Without subagents (plain chat)**: run workstreams as sequential passes and adopt distinct
   hats deliberately: Builder, then Critic, then Editor. The separation is the point. The Builder
   may be ambitious; the Critic must be brutal.
+- **Model mix (the metered-tokens rule)**: do not run every role on the best model. Director
+  thinking and FRAME go on the strongest model available; builders run on the session default;
+  mechanical workstreams (grep sweeps, format fixes, file moves, validation) run at low effort
+  or a cheap tier; the cold verifier gets the strongest model you can afford, because
+  verification is where the quality actually comes from. When the frontier model is
+  pay-per-use, this mix is the difference between a loop you can afford to run and one you
+  cannot. When all roles share one flat-rate model, spend the differential in effort settings
+  instead.
 
 ### 4. EXECUTE
 Do the work in the smallest reversible steps that still move fast. Verify as you go: run the
 code, check the fact, test the edge case. Checkpoint progress (commit, save the artifact) so a
 bad round is cheap to roll back. Prefer making the real thing over describing the real thing.
 
+**Ground the plan before building on it.** Each workstream's first act is to check its plan
+against the real artifacts it is about to touch: do the named files, functions, endpoints, and
+data exist and behave as the plan assumes? Every mismatch goes to the assumption ledger and the
+plan is adjusted before the build starts. A builder that discovers reality mid-build improvises
+silently, and silent improvisation is where vision drift and broken call sites hide.
+
 **Keep an assumption ledger.** Every time the builder decides something the BRIEF does not
-specify (an architecture choice, a tone, a look, a scope call), log it in one line in the
-director's log under `ASSUMPTIONS`. A plan never captures the whole vision; the agent fills the
+specify (an architecture choice, a tone, a look, a scope call), log it in one line in `LOG.md`
+under `ASSUMPTIONS`. A plan never captures the whole vision; the agent fills the
 gaps, and unlogged assumptions are where vision drift hides. The ledger makes the gap-filling
 visible so Victor can correct it in thirty seconds at the handoff instead of discovering it in
 the artifact. Logging an assumption is not a license to skip the gates: an assumption that
@@ -145,7 +190,13 @@ subagent outperforms self-critique precisely because grading happens in an indep
 window, and their hosted equivalent (CMA Outcomes) will not let the agent stop until the grader
 passes the rubric.
 
-Two rules keep the verifier honest:
+**Scripts before verifiers.** Run every mechanical check (file existence, frontmatter validity,
+counts and caps, style law such as the em-dash ban, link resolution) as a cheap script BEFORE
+spawning the cold verifier. Verifiers grade judgment; scripts grade mechanics. A verifier that
+burns its one cold read catching defects a five-line script would have caught has wasted the
+most expensive attention in the loop.
+
+These rules keep the verifier honest:
 - **The verifier's verdict gates the stop.** The loop cannot declare done while the cold verifier
   marks any criterion failed. The director does not get to overrule a fail with confidence; the
   only override is a written, surfaced downgrade per the downgrade rules. The verifier is the
@@ -155,6 +206,11 @@ Two rules keep the verifier honest:
   work. Spawn a new cold agent each round with only `CRITERIA.md` and the current artifacts.
 - For each failed criterion, the verifier states the evidence of failure (the command output, the
   line, the missing artifact), not just the verdict, so the next round has something to aim at.
+- **Fixed verdict format.** Instruct every verifier to return exactly: (1) a verdict table, one
+  row per criterion (id, PASS/FAIL/PARTIAL, one line of evidence); (2) a ranked defect list with
+  file and quote; (3) a one-line overall verdict. A fixed shape makes round-over-round
+  comparison mechanical and lets scheduled mode fill STATE.json straight from the verdict
+  instead of re-summarizing prose.
 - **Cap the verifier's payload.** A verifier handed more than it can actually contextualize in
   one cold read (the field's empirical line for code review is roughly 1,000 changed lines)
   stops grading and starts skimming, and its verdict goes noisy in both directions. Scope each
@@ -189,6 +245,10 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
 - **Not met, budget remains**: first **investigate, then iterate**. Before writing the next
   self-prompt, figure out *why* the criterion failed (read the error, reproduce it, check the
   assumption) and verify the diagnosis: a fix aimed at an unverified guess is a wasted round.
+  When the failure is a judgment call rather than a hard error, read the raw transcript of the
+  round (the agent's and verifier's actual output, not your summary of it), find the line where
+  the judgment diverged from the contract, and aim the next self-prompt at that exact moment. The
+  signal is in the trace, not the artifact.
   Then write the next self-prompt as a specific improvement hypothesis ("the X is weak because Y,
   verified by Z; next pass I will W"), and **classify it as structural or scalar**. Scalar
   adjusts a knob on the same approach (a constant, a phrasing, a parameter); structural changes
@@ -199,12 +259,15 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
   before reverting, budget permitting; the biggest wins in Anthropic's own loop experiments came
   from pushing through an initial regression. Each round must change something substantive, not
   just reword. For a failed criterion choose one of: (a) refine inline, (b) spawn a
-  sharper-angled agent, or (c) downgrade the criterion with a written rationale.
+  sharper-angled agent, (c) restart the build from the frozen contract when the contract is sound
+  but the build itself has become the mess and throwing it away is cheaper than untangling it
+  (interactive mode only, never in scheduled mode, since deleting work on a model's judgment with
+  no human in the room is a foot-gun), or (d) downgrade the criterion with a written rationale.
 - **Budget exhausted or diminishing returns**: stop honestly. Report what is strong, what is
   weak, what the next real leap would require. A truthful "here is where it stands" beats a fake
   "10x achieved". Better to ship 8/10 criteria honestly than fake-ship 10/10.
 
-## The director's brief (round-zero template)
+## The director's brief (the `BRIEF.md` template)
 
 Save as `BRIEF.md` next to `CRITERIA.md`.
 
@@ -219,6 +282,30 @@ LOOP BUDGET:  <max rounds: default 3, use 5 if "deep">
 EXIT:         <what "done" looks like in one sentence>
 DOWNGRADES:   <which criteria may be relaxed if blocked, and why>
 ```
+
+## The director's log (`LOG.md`)
+
+The run's journal, next to `BRIEF.md` and `CRITERIA.md`. The brief is the contract; the log is
+the flight record. Together with the criteria they are the interactive resume contract (in
+scheduled mode `STATE.json` leads and the log is the human-auditable fallback). Open it at
+ORIENT with a Round 0 grounding entry, then append one entry per round, each short enough to
+write in a minute:
+
+```
+## Round 0 (date)
+GROUNDING:    <the explain-back: how the system actually works, each claim VERIFIED or ASSUMED>
+
+## Round N (date)
+HYPOTHESIS:   <this round's improvement bet, marked structural or scalar>
+DID:          <what actually changed, with paths>
+ASSUMPTIONS:  <gap-filling calls made beyond the BRIEF, one line each>
+VERDICT:      <the cold verifier's one-line verdict + per-criterion marks>
+DECIDE:       <stop / iterate / downgrade, and the single next action>
+```
+
+Journal discipline (adapted from ClineFlow's journal system): record why, not just what;
+decisions carry their rationale; entries are appended, never rewritten, so the trail stays
+honest and a cold session can reconstruct the run from the log alone.
 
 ## The 10x rubric (operationalizing "amazing")
 
@@ -289,7 +376,7 @@ done and what remains"); it never silently keeps going. The three independent ha
 rounds, no-progress detection, and this ceiling. Any one fires the stop.
 
 **3. Durable, machine-readable state (`STATE.json`).** Interactive resume re-reads the prose
-director's log. A cron-fired cold start cannot rely on prose. Maintain `STATE.json` next to
+director's log (`LOG.md`). A cron-fired cold start cannot rely on prose. Maintain `STATE.json` next to
 `BRIEF.md` and `CRITERIA.md`, rewritten at the end of every round, holding: round number and
 round budget; each criterion's id and pass/fail/partial status; spend so far and the ceiling; the
 queue of pending gates; and the single next action. On wake, read `STATE.json` first,
@@ -311,7 +398,7 @@ disciplines, all mandatory in this mode:
   never let a scheduled run install or fetch a new one on its own.
 - **Sanitize what gets logged.** Long unattended runs scatter output across logs no one is
   reading. Keep verbose/debug logging off in scheduled mode and redact anything credential-shaped
-  before it lands in the director's log, `STATE.json`, or `PENDING-APPROVALS.md`.
+  before it lands in `LOG.md`, `STATE.json`, or `PENDING-APPROVALS.md`.
 - **Least privilege, re-audited.** The loop runs with the narrowest permission scope the task
   needs, and write/network scope added "just for this run" is removed at handoff, never left
   standing. Re-state the loop's actual permission scope in the handoff so scope creep is visible.
@@ -339,6 +426,10 @@ interactive loop as normal.
   ten mediocre ones.
 - **Scope drift and silent autonomy.** Re-anchor to the mission each round, and keep a visible
   log so Victor can audit the loop and intervene.
+- **Optimizing a misunderstood contract.** The loop amplifies whatever FRAME locked in. If the
+  mental model behind the criteria was never grounded in the real artifacts, every round
+  polishes the wrong thing with increasing confidence. Ground first; the expensive failures
+  are shared misunderstanding, not bad execution.
 - **Using this for trivial work.** Crank is for substantial deliverables. Three-line
   edits do not need a writers room. If the work is small, just do it.
 
@@ -356,7 +447,7 @@ Any one triggers stop:
   honest handoff and the pending-approvals queue intact; never continue past it.
 
 **Resuming a long run.** A deep 5-round loop will outrun a single context window. `BRIEF.md`,
-`CRITERIA.md`, and the director's log ARE the resume point. On a fresh session, re-read all three,
+`CRITERIA.md`, and the director's log (`LOG.md`) ARE the resume point. On a fresh session, re-read all three,
 re-establish which criteria still fail, then continue from the last DECIDE. Do not restart the
 loop from scratch. In scheduled mode the resume contract is `STATE.json` (read it first); the
 prose log is for the human and is the fallback if `STATE.json` is missing or stale.
@@ -375,7 +466,15 @@ ORIENT consults the file at the start of the next run. Discipline for the file:
 - **General over episodic.** Write the rule, not the anecdote: what would have saved a round if
   known at ORIENT, phrased so it applies to the next task, not just this one.
 - **Prune on write.** If a run disproves an existing rule, correct or delete it. A stale rule
-  consulted is worse than no rule.
+  consulted is worse than no rule. Also delete any rule or scaffolding the current model now
+  handles unaided: a harness that only ever grows is one nobody is re-reading, and last quarter's
+  load-bearing workaround is this quarter's dead weight. This pruning never touches the
+  scheduled-mode security disciplines, which are load-bearing, not overhead.
+- **Promote craft rules to global.** If a distilled rule is about how to run loops, verify,
+  budget, or author artifacts (craft) rather than a fact about this project, write it to
+  `~/.claude/crank/LEARNINGS.md` as well as, or instead of, the workspace file, so every future
+  run in every project inherits it. Same discipline applies there: verified rules only, prune
+  on write.
 - Keep it short: one line per rule, the file readable in under a minute. If a run produced no
   rule worth keeping, write nothing; most rounds will not.
 

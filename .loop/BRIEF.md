@@ -1,13 +1,23 @@
-# BRIEF: Crank repo + launch post
+# BRIEF: Crank improves Crank (Uriostegui/ClineFlow alignment round)
+Run date: 2026-07-04. Director: Claudus on Fable 5. Panel: Theo, Lars, Mythos.
+(Prior contract: the June launch run; superseded, in git history.)
 
-This repo was itself built in Crank. This is the round-zero contract.
+WHAT:         An improved /crank skill (SKILL.md, installed + repo copies), a research note
+              capturing the Uriostegui article + clineflow repo, a before/after HTML page.
+WHY:          Victor wants /crank to absorb whatever the "Stop telling the agent what to do"
+              approach does better: alignment-before-implementation, grounding, and
+              persistent journaling. Same pattern as the 2026-06-09 Lance Martin round:
+              new source, extract the delta, execute only the bet-worthy changes.
+WHO:          Future Crank runs (every project), and readers of github.com/victordelrosal/crank.
+CRITERIA:     see CRITERIA.md (12, mostly environment-checkable; loop-shaped).
+PRD:          no. BRIEF + CRITERIA suffice for a skill edit.
+FLEET:        director/builder = self (Claudus); panel = Theo + Lars + Mythos (judgment);
+              cold verifier = fresh subagent per round, sees CRITERIA + artifacts only.
+LOOP BUDGET:  3 rounds max.
+EXIT:         Skill updated with panel-approved deltas only, both copies identical, verifier
+              passes, pushed to GitHub, before/after HTML delivered.
+DOWNGRADES:   C10 (HTML page) may ship after the verifier round rather than inside it, since
+              the page describes the final state. None of C1-C9 may be downgraded.
 
-WHAT:         A public GitHub repo for Crank (the /diy-loop skill incl. the new scheduled argument): README with ASCII banner, the working skill, a visual landing page, research provenance, MIT license; plus a humanized LinkedIn launch post in Victor's voice.
-WHY:          The "design loops, not prompts" discourse hit millions of views in early June 2026. Victor has a working, disciplined instance of the idea. Ship it as open source while the topic is hot, and tell the story honestly in his voice.
-WHO:          Developers and AI-curious builders reading the loops discourse; Victor's LinkedIn audience (AI for business, practitioners).
-CRITERIA:     see CRITERIA.md
-PRD:          no (single coherent artifact set, not a multi-feature product)
-FLEET:        research+citation agent (web, background) || builder (self): README, skill copy, landing page, post
-LOOP BUDGET:  2 rounds (build, then red-team + fix)
-EXIT:         Repo is complete and correct locally; post is humanized and citation-clean; the two outward actions (publish repo, post to LinkedIn) are gated for Victor.
-DOWNGRADES:   The 19-theme design-md engine is omitted from the landing page in favour of a self-contained light/dark toggle, because the page ships inside a portable repo where ../design-md/ will not exist. Documented deviation.
+Known repair discovered at ORIENT: installed skill is ahead of repo copy (2026-07-02 edits
+never synced to sBs/crank/skill/SKILL.md). Sync is part of this run.
