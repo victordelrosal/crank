@@ -183,6 +183,7 @@ a.inline:hover{border-bottom-color:var(--lapis)}
   <div class="links">
     <a href="#what">What a loop is</a>
     <a href="#modes">Two modes</a>
+    <a href="#transmission">Transmission</a>
     <a href="#moat">The moat</a>
   </div>
   <div class="spacer"></div>
@@ -268,8 +269,24 @@ a.inline:hover{border-bottom-color:var(--lapis)}
     </div></div></div>
   </article>
 
+  <article class="card" data-open="true" id="transmission">
+    <button class="card__toggle" aria-expanded="true"><span class="card__n">4</span><h2 class="card__title">Drive automatic, not stick</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="card__body"><div><div class="card__inner">
+      <p>Switching models by hand gets old fast: the strong one to plan, the workhorse to build, the cheap one for the menial parts, then back again every few minutes. Crank shifts for you. <em>Every agent the loop dispatches carries an explicit model choice, picked by the shape of the task</em>, so you never stop to change gear mid-run.</p>
+      <table class="tbl">
+        <thead><tr><th>Gear</th><th>Model</th><th>What runs there</th></tr></thead>
+        <tbody>
+          <tr><td>Top</td><td><code>fable</code></td><td>The framing, the hardest structural bets, and the final cold verifier</td></tr>
+          <tr><td>Drive</td><td><code>opus</code></td><td>The builders and most per-round verification. The default; when in doubt, drive</td></tr>
+          <tr><td>Low</td><td><code>sonnet</code></td><td>Mechanical work: scrapes, grep sweeps, format fixes, bulk plumbing</td></tr>
+        </tbody>
+      </table>
+      <p>One honest limit: the loop cannot change the model <em>you</em> are on, only the agents it sends out. When the director itself needs the top gear, it spawns a <code>fable</code> agent for that one decision and folds the answer back. <em>The gearbox was always there; Crank just stopped making you work it.</em></p>
+    </div></div></div>
+  </article>
+
   <article class="card" data-open="true" id="moat">
-    <button class="card__toggle" aria-expanded="true"><span class="card__n">4</span><h2 class="card__title">The two things the hype skips</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <button class="card__toggle" aria-expanded="true"><span class="card__n">5</span><h2 class="card__title">The two things the hype skips</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
     <div class="card__body"><div><div class="card__inner">
       <p><strong>Verification is the moat, not the loop.</strong> Everyone is selling the loop. The loop is plumbing. The defensible part is a separate adversary, with context isolation, that is trying to fail the work before it reaches you. Self-verification is the author being too nice grading its own homework.</p>
       <p><strong>A good loop should not deskill you.</strong> The faster it ships code you did not write, the wider the gap between what exists and what you understand. Every run ends with a short, honest note headed <em>What you would need to do this yourself</em>, so the loop never quietly leaves you more served and less able.</p>
@@ -277,7 +294,7 @@ a.inline:hover{border-bottom-color:var(--lapis)}
   </article>
 
   <article class="card" data-open="false" id="lineage">
-    <button class="card__toggle" aria-expanded="false"><span class="card__n">5</span><h2 class="card__title">The lineage</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <button class="card__toggle" aria-expanded="false"><span class="card__n">6</span><h2 class="card__title">The lineage</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
     <div class="card__body"><div><div class="card__inner">
       <p>This is not year zero. The honest ladder, oldest to newest:</p>
       <ul>
@@ -292,7 +309,7 @@ a.inline:hover{border-bottom-color:var(--lapis)}
   </article>
 
   <article class="card" data-open="false" id="cron">
-    <button class="card__toggle" aria-expanded="false"><span class="card__n">6</span><h2 class="card__title">"It's just a cron job"</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <button class="card__toggle" aria-expanded="false"><span class="card__n">7</span><h2 class="card__title">"It's just a cron job"</h2><svg class="card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
     <div class="card__body"><div><div class="card__inner">
       <p>The most common dismissal, and it is half right. The scheduling layer is cron. What cron never had is the part in the middle. A cron job runs a fixed script, the same path every time regardless of the state of the world. A loop runs a model that reads the current state, picks the next action, checks whether it worked, and decides whether to keep going. The decision is the model's, not a hardcoded branch.</p>
       <p>So the honest framing is neither "loops are new magic" nor "loops are just cron". It is that loops are cron plus a decision-maker in the body, and the interesting engineering is everything you wrap around that decision so it does not run off a cliff.</p>
