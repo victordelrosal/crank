@@ -10,7 +10,9 @@ description: >-
   the acceptance criteria are yours to set. You grasp Victor's intent, write your own binary
   acceptance criteria (and a PRD when the work warrants one), dispatch a fleet, run a
   plan-execute-red-team-decide loop scored by /bet-weights, and STOP for a human before anything
-  irreversible or outward-facing. Supersedes the older loop-til-satisfied and diy-director skills.
+  irreversible or outward-facing. Model routing is automatic: the fleet shifts between fable,
+  opus, and sonnet per task shape so Victor never has to /model-switch mid-run.
+  Supersedes the older loop-til-satisfied and diy-director skills.
   Default invocation is interactive Crank (you, present, between rounds). Pass the
   `scheduled` argument ("/crank scheduled ...", aliases "live", "cron", "unattended", "on a
   heartbeat", "run nightly", "while I'm away") to run the same loop unattended on a heartbeat:
@@ -95,7 +97,9 @@ non-Fable model (Opus, Sonnet, Haiku), load the `fable-mind` skill before FRAME 
 `fable-effort-triage` own the loop-fitness call: the loop's structure is doing more of the work,
 so keep every gate at full strength. On a Fable-class model, the discipline still holds but
 FRAME may be compressed for small, well-scoped work; do not add ceremony the model natively
-covers. Either way the gates and the cold verifier never compress.
+covers. Either way the gates and the cold verifier never compress. The session model only
+governs the director's own thinking; every dispatched agent gets its gear from the transmission
+(see "The transmission: automatic model routing"), regardless of what the session runs.
 
 ### 2. FRAME: self-prompt the contract (write it down before working)
 This is where you prompt yourself instead of waiting for Victor. Produce, in the workspace:
@@ -157,14 +161,11 @@ Every criterion gets a named owner, even if the owner is "self".
 - **Without subagents (plain chat)**: run workstreams as sequential passes and adopt distinct
   hats deliberately: Builder, then Critic, then Editor. The separation is the point. The Builder
   may be ambitious; the Critic must be brutal.
-- **Model mix (the metered-tokens rule)**: do not run every role on the best model. Director
-  thinking and FRAME go on the strongest model available; builders run on the session default;
-  mechanical workstreams (grep sweeps, format fixes, file moves, validation) run at low effort
-  or a cheap tier; the cold verifier gets the strongest model you can afford, because
-  verification is where the quality actually comes from. When the frontier model is
-  pay-per-use, this mix is the difference between a loop you can afford to run and one you
-  cannot. When all roles share one flat-rate model, spend the differential in effort settings
-  instead.
+- **Model mix**: route every dispatched agent through the transmission (see "The transmission:
+  automatic model routing" below). The defaults, so they cannot be misremembered: builders run
+  `opus`; mechanical passes (scrapes, sweeps, fixes) run `sonnet` at low effort; the final-round
+  verifier and any high-stakes red-team run `fable`. Each FLEET role in `BRIEF.md` names its
+  gear, and Victor is never asked to `/model`-switch: the fleet shifts itself.
 
 ### 4. EXECUTE
 Do the work in the smallest reversible steps that still move fast. Verify as you go: run the
@@ -296,6 +297,49 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
   weak, what the next real leap would require. A truthful "here is where it stands" beats a fake
   "10x achieved". Better to ship 8/10 criteria honestly than fake-ship 10/10.
 
+## The transmission: automatic model routing
+
+Victor drives automatic, not stick. He should never have to stop and `/model`-switch between
+Fable for planning, Opus for building, and Sonnet for menial work; that is Crank's job. The
+session model is whatever it is; every agent the loop dispatches carries an explicit model
+override chosen by task shape. The gearbox is real and already installed: the Agent tool takes
+a `model` parameter (`fable`, `opus`, `sonnet`, `haiku`) and Workflow's `agent()` takes
+`opts.model` plus `opts.effort`. Use them on every dispatch; an agent spawned without a
+deliberate gear choice is a missed shift.
+
+| Gear | Model | Route here | Share |
+|---|---|---|---|
+| **Top** | `fable` | FRAME on high-stakes or ambiguous missions; the structural bet after a stuck round; the cold verifier on judge-checkable criteria and on the final round; red-teaming anything outward-facing; the one decision the whole run hinges on | ~10% |
+| **Drive** | `opus` | Builders and execution workstreams; routine per-round verification; integration and handoff writing. The default gear: when in doubt, drive | ~85% |
+| **Low** | `sonnet` | Mechanical work: scraping, grep sweeps, format fixes, file moves, link checks, bulk transforms, data plumbing, running check scripts. Pair with `effort: 'low'` | ~5% |
+| **Crawl** | `haiku` | Truly trivial bulk mechanics (hundreds of identical checks or extractions) where even Sonnet is overkill | rare |
+
+Shifting rules:
+- **Route by task shape, not by mood or habit.** Judgment-heavy shifts up; mechanical shifts
+  down; everything else stays in drive. The shares above are a sanity check, not a quota: a
+  scrape-heavy run is legitimately mostly low gear, a strategy run mostly top.
+- **The verifier rides one gear above its builder** whenever affordable. Verification is where
+  the quality actually comes from; a Sonnet builder graded by an Opus verifier is a good trade,
+  an Opus build graded by a Fable verifier on the final round is the best one in the box.
+- **Escalate on repeated failure.** A workstream that fails the same criterion twice on its
+  current gear gets one round on the next gear up before the director reaches for a fork or a
+  structural rewrite. One shift is cheaper than a wasted round.
+- **Downshift the moment work turns mechanical.** If a drive-gear agent's remaining job is
+  applying a known fix across N files, that is a new low-gear dispatch, not a reason to keep
+  paying drive rates.
+- **The director cannot shift the session itself.** The main loop's model is set by Victor's
+  `/model` and is out of the loop's reach; never ask him to change it mid-run. If director-level
+  thinking needs top gear while the session runs something else, the answer is always the same:
+  spawn a `fable` subagent for that single decision and fold its answer back. Not "raise effort
+  and hope", not "ask Victor to switch"; a fable subagent. Effort settings tune within a gear;
+  they never substitute for the gear.
+- **Log the gear.** Every FLEET role in `BRIEF.md` names its model, and mid-run shifts are noted
+  in `LOG.md` (a one-word annotation in DID is enough). An auditable transmission is one Victor
+  can retune.
+- **Flat-rate does not mean free.** When all gears bill the same, the routing still holds: it
+  buys attention allocation and latency, not just money. On metered tokens it is also the
+  difference between a loop you can afford and one you cannot.
+
 ## The director's brief (the `BRIEF.md` template)
 
 Save as `BRIEF.md` next to `CRITERIA.md`.
@@ -306,7 +350,7 @@ WHY:          <Victor's underlying goal, read between the lines>
 WHO:          <target audience, specific, not "general readers">
 CRITERIA:     <5-10 binary tests, each a single sentence>
 PRD:          <yes/no; if yes, path to the PRD>
-FLEET:        <agent count + named role per agent + criterion ownership>
+FLEET:        <agent count + named role per agent + model gear per role + criterion ownership>
 LOOP BUDGET:  <max rounds: default 3, use 5 if "deep">
 EXIT:         <what "done" looks like in one sentence>
 DOWNGRADES:   <which criteria may be relaxed if blocked, and why>
