@@ -11,7 +11,8 @@ description: >-
   acceptance criteria (and a PRD when the work warrants one), dispatch a fleet, run a
   plan-execute-red-team-decide loop scored by /bet-weights, and STOP for a human before anything
   irreversible or outward-facing. Model routing is automatic: the fleet shifts between fable,
-  opus, and sonnet per task shape so Victor never has to /model-switch mid-run.
+  opus, and sonnet per task shape so Victor never has to /model-switch mid-run, opens every run
+  by announcing the gear, and announces every shift as it happens.
   Supersedes the older loop-til-satisfied and diy-director skills.
   Default invocation is interactive Crank (you, present, between rounds). Pass the
   `scheduled` argument ("/crank scheduled ...", aliases "live", "cron", "unattended", "on a
@@ -91,6 +92,25 @@ record it in `LOG.md` before changing anything. Every later claim of improvement
 against that baseline, not against memory of it. Karpathy's autoresearch makes the baseline
 run of the untouched script mandatory before any mutation, for exactly this reason (captured
 in research/loop-benchmark-2026-07.md).
+
+**Announce the gearbox FIRST (non-optional, every run).** The very first thing Crank says to
+Victor, before ORIENT's findings, before any tool talk, is one visible gearbox block: which gear
+the session itself is in right now, and how the automatic transmission will route the run. Format
+(adapt the specifics, keep the shape):
+
+```
+⚙ GEARBOX (automatic). Session gear: Fable (top).
+Routing this run: planning + final verify stay in top gear (~10%, Fable is the
+hungry model: it plans and judges, it never executes); builders dispatch in
+drive (Opus); mechanical sweeps in low (Sonnet). I'll announce every shift.
+```
+
+If the session is already in Fable, say so and say that top gear is therefore covered for
+director thinking, and that execution will still downshift (Fable executes nothing). If the
+session is in Opus or Sonnet, say that too, and that top-gear decisions will be spawned as
+`fable` subagents. Victor should never have to ask which gear the work is in; the run opens by
+telling him, and every later shift is announced as it happens (see "Announce every shift" in the
+transmission rules).
 
 **Know which model is running.** Note the model at ORIENT and match the scaffolding to it. On a
 non-Fable model (Opus, Sonnet, Haiku), load the `fable-mind` skill before FRAME and let
@@ -315,6 +335,15 @@ deliberate gear choice is a missed shift.
 | **Crawl** | `haiku` | Truly trivial bulk mechanics (hundreds of identical checks or extractions) where even Sonnet is overkill | rare |
 
 Shifting rules:
+- **Announce every shift, out loud, as it happens.** The gearbox is transparent, never silent.
+  The run opens with the gearbox block (see ORIENT), and every dispatch or mid-run gear change
+  gets one visible line in the reply, e.g. `⚙ shifting to low (sonnet): link sweep across 40
+  pages` or `⚙ top gear (fable): cold verify, final round`. Victor always knows whether the
+  work of the moment is in Fable, Opus, or Sonnet without asking.
+- **Top gear plans and judges; it never executes.** Fable is the hungry model: reserve it
+  (~10% of the run) for FRAME on hard missions, the structural bet, the final cold verify, and
+  red-teaming outward-facing work. Execution always downshifts to drive or low, even when the
+  session itself is running Fable.
 - **Route by task shape, not by mood or habit.** Judgment-heavy shifts up; mechanical shifts
   down; everything else stays in drive. The shares above are a sanity check, not a quota: a
   scrape-heavy run is legitimately mostly low gear, a strategy run mostly top.
