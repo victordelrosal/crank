@@ -1,58 +1,53 @@
-# BRIEF: Crank improves Crank (Uriostegui/ClineFlow alignment round)
-Run date: 2026-07-04. Director: Claudus on Fable 5. Panel: Theo, Lars, Mythos.
-(Prior contract: the June launch run; superseded, in git history.)
+# BRIEF: Crank run 4 (2026-07-27, evening)
 
-WHAT:         An improved /crank skill (SKILL.md, installed + repo copies), a research note
-              capturing the Uriostegui article + clineflow repo, a before/after HTML page.
-WHY:          Victor wants /crank to absorb whatever the "Stop telling the agent what to do"
-              approach does better: alignment-before-implementation, grounding, and
-              persistent journaling. Same pattern as the 2026-06-09 Lance Martin round:
-              new source, extract the delta, execute only the bet-worthy changes.
-WHO:          Future Crank runs (every project), and readers of github.com/victordelrosal/crank.
-CRITERIA:     see CRITERIA.md (12, mostly environment-checkable; loop-shaped).
-PRD:          no. BRIEF + CRITERIA suffice for a skill edit.
-FLEET:        director/builder = self (Claudus); panel = Theo + Lars + Mythos (judgment);
-              cold verifier = fresh subagent per round, sees CRITERIA + artifacts only.
-LOOP BUDGET:  3 rounds max.
-EXIT:         Skill updated with panel-approved deltas only, both copies identical, verifier
-              passes, pushed to GitHub, before/after HTML delivered.
-DOWNGRADES:   C10 (HTML page) may ship after the verifier round rather than inside it, since
-              the page describes the final state. None of C1-C9 may be downgraded.
+WHAT:         The decision, and any resulting changes, on what Crank must absorb from
+              "The Knowledge Graph Playbook for Agentic Systems" (Anthropic-sourced synthesis,
+              July 2026, now at research/knowledge-graph-playbook-anthropic-2026-07.pdf).
+              Deliverables: a research capture with covers/lacks; the adopted deltas in
+              skill/SKILL.md; the check.sh gate extended; LEARNINGS updated; README aligned.
 
-Known repair discovered at ORIENT: installed skill is ahead of repo copy (2026-07-02 edits
-never synced to sBs/crank/skill/SKILL.md). Sync is part of this run.
+WHY:          Victor asked "do we need, should we make changes to crank?" and named the panel.
+              The underlying goal is not to absorb a document; it is to keep Crank honest about
+              which mechanisms it genuinely needs and which are ceremony. Run 3 (this morning)
+              absorbed eleven deltas from the topology sources. A fourth round the same day that
+              bolts on a knowledge graph because a paper described one would be exactly the
+              volume-as-proxy-for-value anti-pattern Crank names. The valuable answer may be
+              mostly "no", and it has to be argued, not asserted.
 
-## v2 extension (Victor interjection, 2026-07-04, after round 1 shipped)
-Scope extended: benchmark Crank against the wider field (Karpathy autoresearch, Ralph,
-Memory Bank, spec-driven harnesses, academic self-improvement loops), then execute the
-bet-worthy deltas. Criteria 13-16 appended. Budget: +2 rounds (4 total). Fleet: 3 parallel
-research agents (Karpathy/local, practitioner harnesses, academic mechanisms), director
-synthesis, panel, builder, fresh cold verifier #2.
+WHO:          Crank's own operators: Victor, and any agent that loads skill/SKILL.md. Secondary:
+              readers of the public README at victordelrosal.com/crank/.
 
-## v3 run (2026-07-27): the topology layer
+CRITERIA:     See CRITERIA.md (C1 to C12).
 
-WHAT:         /crank absorbs the harness/loop/graph distinction: a topology-aware DECOMPOSE, an
-              anchors rule, a layer diagnostic; plus a research capture, a README section, and a
-              new section on the live page at victordelrosal.com/crank/.
-WHY:          Victor passed two late-July X articles (beamnxw on the three layers, Kopadze on
-              graph mechanics) and asked Crank to process, refine, reflect, then crank itself.
-              Same pattern as the 2026-07-04 rounds: new source, extract the delta, execute only
-              the bet-worthy changes, publish the record.
-WHO:          Future Crank runs everywhere, and readers of github.com/victordelrosal/crank and
-              victordelrosal.com/crank/.
-CRITERIA:     see CRITERIA.md run-3 block (13, mostly environment-checkable; loop-shaped).
-PRD:          no. BRIEF + CRITERIA + DELTA suffice for a doctrine edit.
-FLEET:        director/builder = Claudus on Opus 5 (delta spec, research capture, SKILL.md
-              surgery, gate, deploy); builder A = opus (README section); builder B = opus (live
-              page section, in an isolated worktree); cold verifier = fable, fresh, final round.
-EDGES:        builders A and B both wait on .loop/DELTA-2026-07-27.md and on nothing else. No
-              edge between them (fake-edge test applied: neither consumes the other's output).
-              Hidden-edge audit: A writes README.md only, B writes a worktree index.html only,
-              director writes skill/, research/, .loop/. No shared file, no git op by builders.
-              Verifier waits on all three.
-LOOP BUDGET:  3 rounds max.
-EXIT:         Skill carries the eleven adopted deltas and nothing unsourced, both copies
-              identical, gate passes, cold verifier passes, both repos pushed, live URL serves
-              the new section.
-DOWNGRADES:   C13 (verifier's no-ceremony judgment) may land PARTIAL with a written rationale;
-              it is the one judge-checkable criterion. C1 to C12 may not be downgraded.
+PRD:          no. Instruction-artifact work; BRIEF + CRITERIA is the contract.
+
+FLEET:        4 agents.
+              - THEO (opus, drive) principal engineer: mechanism audit. Which playbook
+                mechanisms are already in SKILL.md under another name, which are genuinely
+                absent, which are absent and should stay absent. Owns C3, C4.
+              - LARS (opus, drive) professor: the taxonomy and the sourcing. The "graph"
+                naming collision, the document's provenance and reliability, what may be
+                stated as fact vs attributed. Owns C2, C5.
+              - MYTHOS (opus, drive) frontier mind: the deep call. Does a 3-to-5-agent,
+                3-to-5-round loop need a memory layer at all, and what is the non-obvious
+                move on Crank's own LEARNINGS files. Owns C6, C7.
+              - VERIFIER (opus, drive) cold, fresh, sees CRITERIA.md + artifacts only, told
+                to fail the work. Owns the stop.
+              Director (Claudus, session, opus) integrates and writes the changes.
+
+EDGES:        Real edge: panel (Theo, Lars, Mythos) -> director integration -> gate script ->
+              cold verify. The three panellists have NO edge between them (none consumes
+              another's output); they run at once. Hidden-edge audit: all three READ the same
+              files and NONE writes; the director is the only writer. No worktree needed.
+
+LOOP BUDGET:  2 rounds. This is a bounded delta on a skill that was just rewritten; the risk
+              here is over-adding, not under-adding, and extra rounds bias toward adding.
+
+EXIT:         The verdict on "do we need changes" is argued from the document and from Crank's
+              actual text, every adopted delta is in SKILL.md and greppable by the gate, every
+              rejected mechanism has a written rationale, and the gate passes.
+
+DOWNGRADES:   C10 (README) may be relaxed to a pointer if the README's existing topology
+              section already carries the distinction. Nothing else may be relaxed.
+
+BUDGET CEILING: n/a, interactive, flat-rate.

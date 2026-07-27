@@ -1,245 +1,116 @@
-# LOG: Crank improves Crank (Uriostegui/ClineFlow round), 2026-07-04
+# Director's log: Crank run 4 (2026-07-27, evening)
 
-## Round 0 (ORIENT + FRAME grounding)
-Artifacts located: ~/.claude/skills/crank/SKILL.md (installed, 511 lines), sBs/crank repo
-(skill/SKILL.md, research/ 5 sources incl. Lance Martin, .loop/ from June launch run).
-VERIFIED: installed skill is AHEAD of repo copy; 2026-07-02 edits (global LEARNINGS,
-model-mix, scripts-before-verifiers, know-your-model) never synced (diff run, exit 1).
-VERIFIED: article fetched; clineflow repo cloned to scratchpad and PROCEDURES.md,
-JOURNAL_TEMPLATE.md, WORKING_WITH_CLINE.md read directly.
-ASSUMED: nothing load-bearing left assumed; source and target both read in full.
+## Round 0 (2026-07-27 21:00)
 
-## The panel (judgment record)
+GROUNDING (explain-back of the system this run modifies):
+- VERIFIED: `skill/SKILL.md` is 776 lines and is byte-identical to `~/.claude/skills/crank/SKILL.md`
+  (`cmp` via `.loop/tools/check.sh`). Editing the repo copy alone would ship nothing; the sync is a
+  gate assertion, not a convention.
+- VERIFIED: `.loop/tools/check.sh` is the blocking mechanical gate: an em-dash sweep over a named
+  AUTHORED set, the installed-vs-repo sync assert, and one grep per named rule. A rule added to
+  SKILL.md without a grep term here is invisible to the gate and can be silently dropped later
+  (this is a workspace LEARNINGS rule from run 3).
+- VERIFIED: run 3 closed 19 hours earlier (commits 3a27a02, b9f7e3b) having absorbed eleven
+  TOPOLOGY deltas and having explicitly REFUSED "graph engineering as a third Crank mode".
+- VERIFIED: `~/.claude/crank/LEARNINGS.md` measured 738 lines, 69,859 bytes, 179 rules (`wc`,
+  `grep -c '^- '`), which is 1.24x the byte size of SKILL.md itself, against the skill's own rule
+  that the file stay "readable in under a minute". It truncated when read into this session's
+  context (20,003 characters dropped).
+- VERIFIED: `~/.claude/crank/tools/` did not exist, though SKILL.md has promised craft-grade tools
+  there since 2026-07-04.
+- ASSUMED (stated, not checked): the imported PDF is the complete document, 12 pages, no withheld
+  appendix.
 
-Candidates extracted from the article + repo:
-- A. Ground-before-frame at ORIENT (locate + explain-back, VERIFIED vs ASSUMED marks).
-- B. Ground-the-plan at EXECUTE (builders check plan vs real artifacts pre-build).
-- C. Specify the director's log as LOG.md with a fixed per-round entry shape.
-- D. Builder readback opening every fleet report (3 lines: understanding/approach/assumptions).
-- E. Anti-pattern: optimizing a misunderstood contract.
-- F. Per-feature journal hierarchy. G. File-size/commit/branch/version SOPs. H. Emoji style.
+BASELINE (improvement-shaped mission, recorded before any change):
+skill/SKILL.md 776 lines / 56,473 bytes. Global craft memory 738 lines / 69,859 bytes / 179 rules,
+flat, chronologically ordered, no retrieval move, no gate. `.loop/tools/check.sh` carrying 16 rule
+greps. `research/` holding 9 captures.
 
-Theo (Principal Engineer): A+B are "read the code before you plan" made mandatory; frozen
-criteria make ungrounded FRAME uniquely expensive (one wrong model at minute one buys three
-rounds of polishing the wrong thing). Skill is 511 lines: D earns one sentence, not a section.
-F-H hard reject: Cline baggage, COMPASS and the harness own that ground.
+## Round 1 (2026-07-27 21:00 to 21:30)
 
-Lars (Professor): C is the indefensible one. "Resuming a long run" cites a director's log that
-no section defines: a resume contract referencing an undefined artifact. Fix with a named file
-and fixed entry shape. New source must be cited in-skill exactly as Lance Martin is
-(citation-integrity).
+HYPOTHESIS (structural): the playbook's value to Crank is not its mechanisms, which Crank mostly
+already has under other names, but its LENS. Applied as a lens it should expose (a) a term
+collision created by run 3 that morning, and (b) whatever Crank's own memory layer is doing wrong.
+Predicted outcome: mostly "no changes needed" on mechanisms, plus one or two real structural finds.
 
-Mythos (Resident Frontier Mind): the article's surface reading is "align with the human before
-implementing", and Crank deliberately removed the human. The transferable insight: move the
-alignment burden onto ground truth. Uriostegui's human verifies the agent's mental model; in
-Crank, reality is the verifier, so the explain-back is addressed to the artifacts, not Victor.
-Import the mechanics, not the ceremony. ClineFlow's journal survives translation because cold
-resume is the same problem in both worlds.
+DID:
+- Imported the PDF to `research/knowledge-graph-playbook-anthropic-2026-07.pdf` (Downloads cleared,
+  verified absent).
+- Dispatched the panel Victor named, all opus, all read-only, all in one turn (no edges between
+  them): THEO (mechanism audit, covers vs lacks), LARS (taxonomy plus sourcing, with web fetch),
+  MYTHOS (the memory-layer call plus the fix design).
+- Integrated three ADOPTs from Theo, the disambiguation from Lars, and the shard design from
+  Mythos. Refused Lars's stricter "absorb no mechanisms at all" on the grounds that D1 to D3 were
+  found by grepping Crank's own text, not taken on the document's authority, which is the exact
+  distinction his own appraisal draws.
+- Wrote 5 edits to `skill/SKILL.md` (net +56 lines), the research capture, the README paragraph,
+  6 new grep terms in `.loop/tools/check.sh`, and the memory restructure.
+- Memory restructure: verbatim backup, 179 rules migrated into 7 topic shards by keyword, index
+  rewritten as ALWAYS-plus-shard-table, `learnings/ARCHIVE.md` created, and
+  `~/.claude/crank/tools/learnings-check.sh` written as the new blocking gate.
 
-Claudus (hands): the drift found at ORIENT (installed vs repo, 3 weeks) is live evidence for C
-and yields a LEARNINGS rule: dual-homed skills sync both copies in the same round.
+FAN-IN: 3 dispatched, 3 returned. No gap.
 
-## Bet-weights table (evidence before bet; decided pre-execution)
+ASSUMPTIONS (gap-filling calls beyond the BRIEF):
+- Kept migrated rules VERBATIM rather than truncating them to the 300-character shard line format
+  Mythos specified. Truncation would destroy verified content to satisfy a format; the character
+  guidance therefore applies to new rules and the gate enforces counts and stamps, not length, on
+  migrated ones.
+- Split the `loop` bucket into `loop.md` and `verify.md` when the first pass put 68 rules in one
+  shard against a 60 cap. A gate that is red on the day it is installed gets ignored, so the debt
+  was paid rather than the bar raised.
+- Exempted `ARCHIVE-2026-07-27-pre-shard.md` from the em-dash sweep: it is a frozen verbatim
+  record, and the style law governs what we write, not what we preserve. Same precedent as the
+  repo gate's treatment of raw research captures.
+- Rewrote two quoted em dashes in `verify.md:34` as `(U+2014)` rather than deleting them: the rule
+  is ABOUT em dashes leaking into headers, so the examples had to survive in describable form.
+- Did NOT build `~/.claude/crank/tools/shoot.sh`, though Mythos argued it is the highest-leverage
+  move available. Its flags cannot be verified without driving real browsers, which is a second
+  mission. Adopted the RULE ("Retire rules into tools") and named the script as the next candidate.
 
-| Change | Bet | Verdict |
-|---|---|---|
-| A. Ground-before-frame (ORIENT) | 88% | ACCEPT |
-| C. LOG.md specified | 85% | ACCEPT |
-| B. Ground-the-plan (EXECUTE) | 80% | ACCEPT |
-| E. Anti-pattern: misunderstood contract | 75% | ACCEPT |
-| D. Builder readback (one sentence in DECOMPOSE) | 70% | ACCEPT |
-| F. Per-feature journal hierarchy | 25% | REJECT (per-mission LOG.md suffices) |
-| G. File-size/commit/branch/version SOPs | 15% | REJECT (COMPASS + harness own this) |
-| H. Emoji scanning style | 5% | REJECT (violates house style) |
+GEAR: drive (opus) throughout. Three panel agents opus, director opus. No sonnet dispatches this
+run: nothing in it was mechanical enough. The two gates are shell scripts, no model.
 
-## Round 1 (2026-07-04)
-HYPOTHESIS:   structural: absorb the grounding discipline + journal spec (A-E) into SKILL.md;
-              repair installed-vs-repo drift.
-DID:          8 edits to ~/.claude/skills/crank/SKILL.md (ORIENT grounding block, EXECUTE
-              plan-grounding block, DECOMPOSE readback sentence, new "The director's log
-              (LOG.md)" section, anti-pattern line, 3 LOG.md consistency fixes); wrote
-              research/clineflow-uriostegui.md; synced skill/SKILL.md from installed.
-ASSUMPTIONS:  named the run-log file LOG.md (article/repo use per-feature journals; Crank is
-              per-mission). Kept LOG.md spec out of scheduled mode's STATE.json contract
-              (machine resume unchanged). Old .loop BRIEF/CRITERIA overwritten, git history
-              preserves them.
-VERDICT:      cold verifier (fresh agent, CRITERIA + artifacts only): PASS on C1-C9 and C12,
-              C10/C11 N/A-DEFERRED by sequencing. 5 defects, none contract-breaking: (1) run
-              log named LOG-2026-07-04.md while the new spec mandates LOG.md; (2) "fifth
-              research source" miscount (is the seventh); (3) Round 0 entry shape undefined +
-              "round-zero" naming both BRIEF and LOG entry; (4) verified LEARNINGS rule
-              announced but not written; (5) research note untracked until commit.
-DECIDE:       fix all 5 before ship. Defect 1 fixed by renaming this file to LOG.md; C9's
-              filename reference is hereby a DOCUMENTED CONTRACT EDIT (path changed, content
-              intact), surfaced in the handoff. Defect 2 fixed (seventh capture). Defect 3
-              fixed (Round 0 shape added to the LOG spec; BRIEF heading retitled "the BRIEF.md
-              template"). Defect 4 fixed (dual-homed sync rule written to global LEARNINGS).
-              Defect 5 resolves at commit. Then commit + push (established practice for this
-              public repo since the June launch) and open Round 2: Victor interjected mid-run
-              with a scope extension (Karpathy autoresearch + broader loop-approach
-              benchmarking), which extends the contract; BRIEF v2 + criteria 13-16 appended
-              as a documented contract extension.
+VERDICT: cold verifier (fresh, criteria plus artifacts only, told to fail the work): 11 PASS,
+1 PARTIAL. C4 PARTIAL, because "Retire rules into tools" was added as a bullet twenty lines below
+the pre-existing "Distill tools, not only rules" and repeated its justifying sentence, and because
+two added rules had no covers/lacks row naming an absence search. Verifier independently
+re-derived the rule accounting (179 in, 179 out), swept em dashes outside the gate's allowlist,
+and confirmed the gate was not weakened (`git diff .loop/tools/check.sh` is +3/-1, all additive).
 
-## Round 2 (2026-07-04, contract extension: field benchmark)
-HYPOTHESIS:   structural: benchmark Crank against the wider field (3 parallel research
-              agents: Karpathy autoresearch incl. local skills + primary repo; practitioner
-              harnesses Ralph/MemoryBank/SpecKit/Kiro/BMAD/TaskMaster/Anthropic v1+v2;
-              academic Reflexion/LATS/Voyager/SelfRefine/SWE-agent/OpenHands/DSPy/GEPA/
-              DGM/AI-Scientist/AlphaEvolve/STOP/AWM), absorb only the mechanisms Crank lacks.
-DID:          research/loop-benchmark-2026-07.md (eighth capture, 23 approaches, all sources
-              fetch-verified); 6 edits to SKILL.md: (1) Baseline before you improve [ORIENT],
-              (2) scripts as blocking gate + frozen evaluation surface [RED-TEAM], (3) the
-              verifier drives the artifact [RED-TEAM], (4) DECIDE option (e) fork best-of-N,
-              (5) distill tools not only rules -> .loop/tools/ + ~/.claude/crank/tools/
-              [handoff], (6) readback gains a verification clause [DECOMPOSE].
+DECIDE: iterate, scalar, one round. The PARTIAL was correct and the fixes were cheap.
 
-PANEL (round 2): Theo: take the mechanical cheap ones (baseline, frozen eval, script gate);
-reject state-file duplicates (MemoryBank hierarchy, SpecKit constitution), BRIEF/COMPASS own
-those slots. Lars: strongest-evidenced delta is verifier-drives-the-artifact (Anthropic v1
-e2e-as-user + v2 Playwright skeptic + SWE-agent/OpenHands convergence); promotes the
-blank-engine rule into Crank law. Mythos: steal the two asymmetries: memory should hold
-executable competence not only prose (Voyager/AWM), and stuck lineages should branch not
-iterate (LATS/DGM small-N kernel); reject Karpathy's never-stop directive, it is the failure
-the gates exist to prevent. Claudus: sprint contract folds into the readback for one clause.
+## Round 2 (2026-07-27 21:45)
 
-BET-WEIGHTS (round 2):
-| Delta | Bet | Verdict |
-|---|---|---|
-| Baseline before you improve (Karpathy) | 85% | ACCEPT |
-| Frozen eval surface + script gate (Karpathy + Anthropic/Kiro) | 85% | ACCEPT |
-| Verifier drives the artifact (Anthropic v1/v2) | 82% | ACCEPT |
-| Distill tools, not only rules (Voyager/AWM) | 80% | ACCEPT |
-| DECIDE (e) fork best-of-N (LATS/DGM kernel) | 72% | ACCEPT, cost-caveated |
-| Readback verification clause (Anthropic v2 sprint contract) | 65% | ACCEPT, one clause |
-| Never-stop directive (Karpathy) | 5% | REJECT |
-| Single-scalar fitness | 15% | REJECT |
-| Full MCTS / population evolution | 10% | REJECT (small-N kernel taken) |
-| MemoryBank 6-file hierarchy / SpecKit constitution | 20% | REJECT (duplicate state drifts) |
-| EARS notation | 15% | REJECT (binary criteria same job) |
-| Backpressure asymmetry as skill text (Ralph) | 35% | REJECT (Workflow doctrine owns it) |
+HYPOTHESIS (scalar): C4 fails on two specific, checkable defects; merging the duplicate bullet and
+adding the two missing covers/lacks rows closes both without touching anything else.
 
-ASSUMPTIONS:  benchmark table kept to one row per approach (the research agents' full raw
-              returns live in the session, not the repo); Fortune/X secondary coverage of
-              autoresearch marked UNVERIFIED in the capture and excluded from claims.
-VERDICT:      verifier #2 (fresh, no context from #1): C14 PASS (all 6 deltas diff-traceable
-              to named verified sources; bets recorded for accepted AND rejected), C7 PASS
-              (0 em dashes, register holds), C8 PASS (byte-identical), C13 PARTIAL (6 of 23
-              approaches unmapped; spot-checked sources all real). 5 defects: false
-              UNVERIFIED claim in this LOG entry (mark never written into the capture);
-              6 unmapped approaches; baseline rule pointed at a LOG slot that did not exist;
-              escalation-ladder attribution missing its best-practices URL; "never pause"
-              quoted loosely.
-DECIDE:       appended below.
+DID:
+- Merged "Retire rules into tools" INTO the existing "Distill tools, not only rules" bullet,
+  deleting the near-verbatim justifying sentence and keeping only the additional instruction
+  (convert an existing prose rule into a script, archive it `superseded-by: <tool path>`).
+- Added covers/lacks rows D5 and D6 to the capture, each naming the exact grep run and found
+  absent.
+- Acted on two further verifier defects it raised outside C4: the eviction rule was undecidable
+  because all 179 migrated rules carry the identical `[2026-07]` stamp (stated the honest tie-break
+  in the index rather than pretending the mechanism works yet), and the 60-rule shard caps were
+  defeatable by adding an eighth shard (added a shard-count cap of 8 to `learnings-check.sh`).
+- The repo gate then FAILED on `Retire rules into tools`: the bold phrase had wrapped across a line
+  break and was no longer greppable, though visibly present. Unwrapped and re-ran. This is run 3's
+  own workspace rule catching a run-4 violation of it, which is the gate working.
 
-DECIDE (round 2, final): all 5 defects fixed: UNVERIFIED block now actually written into the
-benchmark capture (the LOG claim is true AFTER the fix; verifier #2 caught me writing the
-claim from intention, the exact failure the global write-from-the-diff LEARNINGS rule names);
-all 6 unmapped approaches (ClineFlow, BMAD, Task Master, Self-Refine, DSPy, GEPA) mapped in
-the covered-before section; BASELINE field added to the Round 0 LOG template; best-practices
-URL added to the v2 row; "never pause" replaced with the program.md-sourced phrasing.
-C13 upgraded per-approach coverage 23/23. Dogfood: mechanical gate distilled to
-.loop/tools/check.sh per the new tools doctrine. STOP: budget round 2 of 2 extension used,
-verifier verdicts recorded, ship: commit + push + /html before/after page.
+FAN-IN: 1 dispatched (scoped C4 re-verify), 1 returned. No gap.
 
----
+ASSUMPTIONS: none new.
 
-# Run 3 (2026-07-27): the topology layer
+GEAR: drive (opus) throughout, including the scoped re-verify.
 
-## Round 0
-GROUNDING:    Installed skill and repo copy byte-identical at 672 lines, VERIFIED via cmp (no
-              drift this time; the 2026-07-04 repair held). The live page is served from the
-              victordelrosal.github.io repo at crank/index.html, VERIFIED against CNAME + the
-              project memory note, and the crank repo's own docs/index.html is dark. The local
-              Dropbox clone of victordelrosal.com is 0 ahead / 159 behind origin/main, VERIFIED
-              via rev-list, and its crank/index.html is 366 lines behind the real one (origin/main
-              carries a TRANSMISSION section the stale copy never saw). All page work therefore
-              happens in a worktree checked out at origin/main; the stale clone is not edited.
-              ASSUMED: the two X articles are faithfully reproduced in Victor's paste (no fetch
-              was possible, X long-form sits behind a Premium wall). Recorded as attributed
-              secondary in the capture, and no rule rests on their authority alone.
-BASELINE:     skill/SKILL.md 672 lines, gate PASS, 16 covered mechanisms and 11 genuine gaps
-              against the two sources (table in research/graph-engineering-2026-07.md).
+VERDICT: scoped cold re-verify of C4 (fresh agent, C4 only, ran its own diff and its own greps
+against `git show HEAD:skill/SKILL.md`): **C4 PASS**. Both prior defects closed; no pre-existing
+rule found saying the same thing under another name for any of the seven added rules. Final tally
+**12 of 12 PASS**.
 
-## Round 1 (2026-07-27)
-HYPOTHESIS:   Structural. Every prior benchmark round improved the cycle; this is the first source
-              material aimed at the SHAPE of the fleet, so the bet is that the gaps are real and
-              concentrated in DECOMPOSE rather than spread thin. If true, one round of surgery on
-              DECOMPOSE plus two new hard rules (anchors, the fan-in guard) closes most of it.
-DID:          Wrote the frozen delta spec (.loop/DELTA-2026-07-27.md, 11 adopted, 5 rejected) and
-              the capture (research/graph-engineering-2026-07.md). SKILL.md 672 -> 780 lines (final count after the round-2 fixes below):
-              DECOMPOSE reframed as the graph step with the fake-edge test, node contract,
-              hidden-edge audit with worktree isolation, fan-out-reduce-verify-synthesize with
-              reduce in code and layered fan-in, the fan-in guard, and Workflow-when-the-topology-
-              is-real; anchors added to RED-TEAM; graph-fitness added to FRAME plus an anchor
-              clause on the criteria rule; a three-layer diagnostic section after the transmission;
-              EDGES in the BRIEF template, FAN-IN in the LOG template; two anti-patterns.
-              check.sh extended with 8 new named-rule greps and the two new authored files.
-              Dogfooded the new rules on this run: fake-edge test applied before dispatch (the two
-              builders' edge to each other was imaginary), hidden-edge audit run (no shared file),
-              the page builder isolated in its own git worktree.
-FAN-IN:       Round 1: 2 builders dispatched (README section, live page section), 2 returned, 0
-              gaps. Verification: 2 cold verifiers dispatched (doctrine, artifacts). At the time
-              this entry was written, verifier 1 had returned and verifier 2 was still running;
-              the count is closed in the round-2 entry below, not assumed here. (Self-caught: the
-              first draft of this line claimed both had returned, which was writing from intention
-              rather than from the diff, the exact failure the global LEARNINGS rule names and the
-              one verifier 2 caught on 2026-07-04.)
-ASSUMPTIONS:  (1) The two X articles are faithfully reproduced in Victor's paste; recorded as
-              attributed secondary, no rule rests on their authority alone. (2) Victor's
-              instruction to "update victordelrosal.com/crank/ and its github repo" is standing
-              authorization to publish both, so publication is not re-gated mid-run. (3) The live
-              page section belongs before #upgrade (the stale local clone's #modes section does
-              not exist on origin/main); the argument order mechanism, discipline, topology,
-              proof is preserved. (4) Handoff logs and design PRDs were deliberately left
-              untracked rather than swept into the public repo.
-VERDICT:      Cold verifier 1 (doctrine, fable, fresh, payload scoped to the skill plus the
-              capture per the cap-the-payload rule): C2-C9 PASS on executed evidence, C1 and
-              C12 PARTIAL, C13 FAIL. Nine defects, worst first: WHISPER.md (explicitly private per
-              the 2026-07-04 handoff) staged toward the PUBLIC remote; a VERIFIED claim about tool
-              parameters a cold verifier cannot reproduce; in-skill citation practice silently
-              dropped (the run-1 precedent); the null/.filter(Boolean) mechanism attributed to a
-              source that does not contain it; em dashes in swept-in handoff logs; this very log
-              entry missing the FAN-IN field the run itself added; a stale line count; view counts
-              repeated without the UNVERIFIED mark; and a mild ceremony risk on small runs.
-DECIDE:       Iterate, scalar, all nine addressed in one pass rather than spending a round each.
-              Fix 1 (the stop-ship): git reset --soft to 621ffeb so WHISPER.md never enters
-              history, plus a .gitignore entry so it can never be swept in again. Nothing had been
-              pushed, so the exposure was zero. Fix 2: the tool-parameter claim now states exactly
-              what was read (Agent takes model; Workflow's agent() takes opts.model and
-              opts.effort) and flags that a subagent cannot see the Workflow tool, so a cold check
-              cannot reproduce it. Fix 3: five inline citations added to SKILL.md (fake-edge test,
-              fan-in guard, anchors, the three-layer section), restoring the run-1 precedent.
-              Fix 4: the null/.filter(Boolean) detail is now attributed to the Workflow tool
-              contract, with the counting rule still credited to Kopadze. Fix 5: handoff logs and
-              design/ left untracked. Fix 6: this entry. Fix 7: line count corrected to 780.
-              Fix 8: both view counts marked UNVERIFIED. Fix 9: the fake-edge test now says that
-              on a two-agent run it is one question, not a ceremony. Also cut a restatement the
-              verifier caught: the anchors paragraph no longer re-states the frozen-evaluation-
-              surface rule that sits directly above it, it now points at it.
-
-## Round 2 (2026-07-27, closing)
-HYPOTHESIS:   Scalar. Both verifiers' defects are fixable in one pass without touching the
-              adopted doctrine, so spend one round on all of them rather than a round each.
-DID:          All nine verifier-1 defects and all four verifier-2 defects fixed (see the round-1
-              DECIDE for the itemised list, plus: README symptom table restored the dropped
-              "simplify the harness"; CRITERIA gained two dated documented contract edits, the
-              #modes anchor and the reuse-plus-extension note; #topology's closing pull quote
-              gained a second, earlier, section-scoped ScrollTrigger). Then Victor interjected
-              mid-run: he is staying on Opus 5, so the transmission drops from four gears to two
-              (Opus ~95%, Sonnet for mechanical work only), Fable 5 and the Haiku crawl gear
-              removed from the skill, the README and the live page, with two replacement rules
-              (judgment never downshifts; the verifier is never below its builder, because
-              context isolation is what makes a grader honest).
-FAN-IN:       Closed. 4 agents dispatched across the run (2 builders, 2 cold verifiers), 4
-              returned, 0 gaps, no silent losses.
-ASSUMPTIONS:  Victor's "leave only sonnet where/as needed" was read as removing the Haiku crawl
-              gear too, since Sonnet becomes the only non-Opus gear. Easy to restore if wrong.
-VERDICT:      Verifier 1 (doctrine): C2-C9 PASS, C1/C12 PARTIAL, C13 FAIL, 9 defects. Verifier 2
-              (artifacts): C10 PASS, C11 PARTIAL, 4 defects, and its own process check clean.
-              After the round-2 fixes: 13 of 13 criteria pass on re-checked evidence, with the two
-              PARTIAL contract deviations recorded rather than argued away. Live anchor: HTTP 200
-              at victordelrosal.com/crank/, #topology present, two-gear readout present, zero
-              Fable references served.
-DECIDE:       Stop. Both repos pushed, the live URL verified against the anchor rather than
-              against memory, LEARNINGS distilled to workspace (project truths) and global (four
-              craft rules). Budget used: 2 rounds of 3.
+DECIDE: STOP. Every criterion passes on the cold verifier's verdict, both gates are green, and the
+round produced no new failure to aim at. Two acknowledged weaknesses remain and are reported rather
+than hidden: nothing automatically invokes `learnings-check.sh` (it runs when an agent chooses to),
+and `tools/shoot.sh` was named as the highest-leverage next move but not built.

@@ -68,9 +68,12 @@ something you genuinely cannot proceed without, ask one sharp question; otherwis
 **Consult before deriving.** If a `LEARNINGS.md` exists in the workspace (or `.loop/LEARNINGS.md`),
 read it before any other planning and apply its rules instead of re-deriving them. That file is
 the distilled output of prior Crank runs (see the memory loop in the final handoff); a rule you
-read costs nothing, a rule you re-derive costs a round. Also consult the global file
-`~/.claude/crank/LEARNINGS.md`: workspace learnings are project truths, global learnings are
-craft truths that apply to every run anywhere.
+read costs nothing, a rule you re-derive costs a round. Also consult the global craft memory, and
+consult it the way it is shaped: read `~/.claude/crank/LEARNINGS.md`, which is an index (the ALWAYS
+rules plus a shard table), then open only the one or two shards its table says this mission touches.
+Never read the shard directory whole; a rule you did not need cost you the attention of one you did.
+Workspace learnings are project truths, global learnings are craft truths that apply to every run
+anywhere.
 
 **Ground before you frame.** When the work modifies an existing system (a codebase, a live
 page, a corpus, a deployed config), reading about it is not understanding it. Before FRAME
@@ -300,6 +303,12 @@ exactly what an optimizer would be tempted to weaken (Kopadze, 2026; captured in
 `research/graph-engineering-2026-07.md`).
 
 These rules keep the verifier honest:
+- **The verifier is read-only.** It grades the artifacts and never edits them, the criteria, the
+  check scripts, or the memory and state files (`LEARNINGS.md`, `LOG.md`, `STATE.json`). The
+  builder does not grade and the grader does not build; a verifier that can fix what it failed can
+  also quietly pass what it fixed, and one that can write to memory can revise the facts it is
+  supposed to check against. Defects go back to the builder as evidence, not as commits. The frozen
+  evaluation surface binds the builder; this binds the grader, and both directions are needed.
 - **The verifier's verdict gates the stop.** The loop cannot declare done while the cold verifier
   marks any criterion failed. The director does not get to overrule a fail with confidence; the
   only override is a written, surfaced downgrade per the downgrade rules. The verifier is the
@@ -442,6 +451,22 @@ budgets, logging, the interfaces verification runs through. **The loop** is the 
 generate, act, evaluate, decide, repeat. **The graph** is the topology: which node runs next, what
 fans out, what joins, where the gates are. The harness contains the graph, the graph contains
 loops, and the harness supplies the state, tools and evaluators the loops need.
+
+**One word, two disciplines: in this skill, "graph" always means topology.** A second sense of
+"graph engineering" is in circulation as of July 2026, meaning a shared knowledge graph that agents
+read and write across sessions, where nodes are entities, edges are typed relations, and every edge
+carries provenance. That is a memory discipline, not an orchestration one, and it is neither a
+parent nor a child of the topology sense; the two share the mathematics of nodes and edges the way
+a call graph and a social graph share it, and nothing else. Crank's graph is the execution topology
+of one run: nodes are agent runs, edges are real artifact dependencies, and the graph is traversed
+once and then discarded. Where Crank means the other thing it writes "knowledge graph" in full and
+never "the graph". Crank's own cross-run memory is `LEARNINGS.md`, `LOG.md` and `STATE.json`, which
+is a memory layer of verified prose rules and state, not a knowledge graph, and calling it one
+would overstate it. (The memory sense is set out in an independently compiled July 2026 synthesis,
+captured with its errors stated in `research/knowledge-graph-playbook-anthropic-2026-07.md`. Note
+also that the layered stack both senses inherit is a third-party framing, not Anthropic's: a direct
+search of Anthropic's engineering writing on 2026-07-27 found no four- or five-layer stack of any
+kind.)
 
 Crank is the loop, and DECOMPOSE is its graph step. The harness is Claude Code's: Crank specifies
 what it needs from a harness (durable files, a fleet, isolation, budgets, an environment it can
@@ -670,6 +695,12 @@ ORIENT consults the file at the start of the next run. Discipline for the file:
   staging API rejects keys older than 90 days (verified round 2, curl output in log)" belongs;
   "maybe the key format is wrong?" does not. A pile of failure notes and open guesses is the
   failure mode, not memory.
+- **Every rule carries its evidence and its date.** A line names what proved it and when: the
+  round, the command output, the file it was read in, plus a `[YYYY-MM]` stamp. A rule with no
+  traceable evidence cannot be re-checked by the run that inherits it and cannot be pruned
+  honestly, yet ORIENT will apply it as authority anyway; a rule with no date makes staleness
+  invisible, so prune-on-write has nothing to prune against. Source it on the next write or delete
+  it. This is the anchors rule pointed at the one artifact that outlives the run.
 - **General over episodic.** Write the rule, not the anecdote: what would have saved a round if
   known at ORIENT, phrased so it applies to the next task, not just this one.
 - **Prune on write.** If a run disproves an existing rule, correct or delete it. A stale rule
@@ -688,8 +719,27 @@ ORIENT consults the file at the start of the next run. Discipline for the file:
   that explains when to reach for it. Prose rules transfer judgment; tools transfer
   competence, and a future run that reuses a verified script starts from capability instead
   of re-deriving it (the skill-library result: Voyager, Agent Workflow Memory).
-- Keep it short: one line per rule, the file readable in under a minute. If a run produced no
-  rule worth keeping, write nothing; most rounds will not.
+  **Retire rules into tools** as well as promoting the instruments a run happened to build: a rule
+  that is really the missing arguments to a command (the flags, the workaround, the order of
+  operations) should BECOME a script, and the rules it replaces are archived
+  `superseded-by: <tool path>`. The right measure of a memory layer
+  is not how much it holds, it is how many rules it can delete by making them true in the
+  environment instead of true on paper.
+- **The global file is an index, not a journal.** `~/.claude/crank/LEARNINGS.md` holds at most 30
+  ALWAYS rules of 120 characters each plus a shard table; every other craft rule lives in a topic
+  shard under `~/.claude/crank/learnings/`, capped at 60 rules of 300 characters per shard.
+  Promotion costs a demotion: adding an ALWAYS rule requires naming the rule it displaces, and
+  adding to a full shard requires evicting its oldest unrefreshed rule. A cap alone is a warning;
+  the forced trade is what keeps the file bounded rather than merely short, because appending is
+  free and pruning is unpaid. Nothing is ever deleted: every evicted rule is appended verbatim to
+  `~/.claude/crank/learnings/ARCHIVE.md` with the date and exactly one reason (`superseded-by`,
+  `disproved`, or `unused-since`). Run `~/.claude/crank/tools/learnings-check.sh` as a blocking
+  gate before the handoff, the same way check scripts gate the cold verifier: a distill that breaks
+  a cap does not ship. (Written 2026-07-27 after the file was measured at 738 lines and 69,859
+  bytes, larger than this skill, against its own former rule that it stay readable in under a
+  minute. A memory layer that only grows is one nobody re-reads.)
+- Keep each line short: one line per rule. If a run produced no rule worth keeping, write nothing;
+  most rounds will not.
 
 Then produce one integration summary, scannable in 30 seconds:
 - **Criteria checklist** with pass / fail / downgrade marks against each. The marks are the cold
@@ -701,6 +751,11 @@ Then produce one integration summary, scannable in 30 seconds:
 - **The assumption ledger**: every gap-filling call the builder made beyond the BRIEF, one line
   each, so Victor can spot vision drift at a glance and correct it cheaply.
 - **Absolute paths** to every artifact produced.
+- **One raw sample.** One unedited excerpt of the actual output (a screenshot, a rendered page,
+  twenty lines of the file), not a description of it. Every other line of this summary is a report
+  about the work; the sample is the work, and it is the cheapest way for Victor to catch in ten
+  seconds what the prose would take another round to admit. This matters most in scheduled mode,
+  where nightly runs otherwise accumulate output no human ever looks at.
 - **The single weakest link** and how to strengthen it next, if Victor wants another pass.
 - **The DIY Addendum** (mandatory): a short closing note, one sentence to one short paragraph,
   headed `What you'd need to do this yourself:`, naming the specific human skills, tools,

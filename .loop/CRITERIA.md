@@ -1,93 +1,70 @@
-# CRITERIA: Crank improves Crank (2026-07-04 round)
+# CRITERIA: Crank run 4 (2026-07-27, evening)
 
-Each is binary. E = environment-checkable (script/grep/diff), J = judge-checkable.
+Binary. Frozen at FRAME. The cold verifier's verdict is the gate.
+Anchor named per criterion. Env = environment-checkable, Judge = judge-checkable.
 
-1.  (E) A research note exists at research/clineflow-uriostegui.md capturing the article's
-    7-step alignment sequence, the ClineFlow journal system, the repo URL, and what Crank
-    took vs deliberately rejected.
-2.  (E) SKILL.md ORIENT contains a grounding discipline for work on existing systems:
-    locate the real artifacts/call sites and state understanding as verified vs assumed
-    BEFORE the contract freezes at FRAME.
-3.  (E) SKILL.md contains a plan-grounding rule (DECOMPOSE or EXECUTE): builders verify the
-    plan's assumptions against the actual artifacts they will touch before building, and
-    mismatches land in the assumption ledger.
-4.  (E) The director's log is specified: a named file (LOG.md), a per-round entry shape, and
-    consistent reference from the resume and scheduled-mode fallback sections (no more
-    unspecified "director's log").
-5.  (J) Every new addition is the delta only: no Cline-specific baggage imported (file-size
-    caps, emoji style guides, commit SOPs, branch SOPs, reference symlinks).
-6.  (E) The new source is cited inside SKILL.md the way Lance Martin already is, and the
-    research file is listed in the repo.
-7.  (J) Voice preserved: reads like the existing skill, no em dashes anywhere in the diff.
-8.  (E) ~/.claude/skills/crank/SKILL.md and sBs/crank/skill/SKILL.md are byte-identical
-    after the edit (drift repaired and not reintroduced).
-9.  (E) The run log (.loop/LOG-2026-07-04.md) contains the panel discussion with named
-    positions and a bet-weights table for every candidate change, accepted and rejected.
-10. (E) A before/after HTML page is produced via /html showing what changed and why, and is
-    delivered to Victor.
-11. (E) Changes committed and pushed to github.com/victordelrosal/crank.
-12. (E) Global ~/.claude/crank/LEARNINGS.md updated only if a rule was verified this run;
-    no speculative rules added.
+## C1 (Env) The source is captured
+`research/knowledge-graph-playbook-anthropic-2026-07.pdf` exists in the repo and
+`~/Downloads/The-Knowledge-Graph-Playbook-Anthropic.pdf` does not exist.
+ANCHOR: `ls` both paths.
 
-## Contract extension (Victor interjection, 2026-07-04 mid-run): benchmarking round
+## C2 (Env) The naming collision is named in the skill
+`skill/SKILL.md` contains a passage that explicitly states the two live meanings of "graph"
+(topology vs shared memory) and says which one Crank's DECOMPOSE section means. Greppable by a
+fixed phrase added to `.loop/tools/check.sh`.
+ANCHOR: `bash .loop/tools/check.sh` passes with the new grep term present.
 
-13. (E) research/loop-benchmark-2026-07.md exists: a benchmark of 8+ named approaches
-    (Karpathy autoresearch, Ralph loop, ClineFlow, Cline Memory Bank, spec-driven harnesses,
-    Reflexion, LATS, Voyager, DSPy/GEPA-class optimizers, AlphaEvolve-class evolution) vs
-    Crank across loop anatomy, verification, memory, stop/safety; verified sources only,
-    UNVERIFIED flagged; states per approach what Crank already covers vs lacks.
-14. (E) SKILL.md gains only the panel-accepted round-2 deltas, each traceable to a named
-    source in the benchmark, with bet-weights recorded in LOG.md for accepted AND rejected.
-15. (E) A fresh cold verifier (verifier #2, no context from verifier #1) passes C13-C14 and
-    re-checks C7 (voice, no em dashes) and C8 (copies byte-identical) after the round-2 edit.
-16. (E) Round 2 committed and pushed; the /html before/after page covers both rounds and is
-    delivered to Victor. (Subsumes C10/C11 sequencing.)
+## C3 (Judge) Covers-vs-lacks is complete and honest
+The research capture contains a covers/lacks table scoring EVERY substantive mechanism in the
+playbook (minimum 12 rows) against Crank's actual current text, each row marked Covered /
+Partly / Lacked, and each "Covered" row naming the Crank rule that covers it by its greppable
+name. RUBRIC: a cold reader with SKILL.md open can verify any row in under a minute.
 
-Note (documented contract edit, round 1): C9's file is .loop/LOG.md, renamed from
-LOG-2026-07-04.md to comply with the LOG.md spec the run itself authored. Content intact.
+## C4 (Judge) Every adopted delta is a real gap, not a restatement
+No delta added to SKILL.md restates a rule already present under another name. RUBRIC: for each
+delta, the capture names what was searched for and found absent.
 
-## Run 3 (2026-07-27): the topology layer. (E) = environment-checkable, (J) = judge-checkable.
+## C5 (Env) Nothing rests on an unverified figure, and the source is attributed as secondary
+The research capture states up front that the playbook is an independent synthesis not affiliated
+with or endorsed by Anthropic, and no numeric claim from it (precision 1.00, recall 0.38 to 0.55,
+k=2 / 200 triples) appears in `skill/SKILL.md` at all.
+ANCHOR: `grep -c` for those figures in SKILL.md returns 0.
 
-1.  (E) research/graph-engineering-2026-07.md exists and captures both sources with author,
-    handle, title and date; marks the provenance of both as attributed secondary (not fetched);
-    marks every figure it repeats UNVERIFIED; and carries a covers-vs-lacks table plus written
-    rejections with rationale.
-2.  (E) skill/SKILL.md DECOMPOSE names the fleet as Crank's graph step and carries the fake-edge
-    test, the node contract, the hidden-edge audit with worktree isolation, fan-out-reduce-
-    verify-synthesize with reduce in plain code and layered fan-in, the fan-in guard, and when to
-    reach for Workflow with pipeline preferred over a barrier.
-3.  (E) skill/SKILL.md carries a "which layer owns the failure" diagnostic naming harness, loop
-    and graph, stating Crank is the loop and DECOMPOSE is its graph step and the harness is
-    Claude Code's, with a symptom-to-layer table of at least 6 rows.
-4.  (E) The anchors rule appears in RED-TEAM as a hard rule (not an aside) and is cross-
-    referenced from the criteria-writing guidance in FRAME.
-5.  (E) A graph-fitness check exists in FRAME as the sibling of the loop-fitness check.
-6.  (E) The BRIEF template gains an EDGES field and the LOG round template gains a FAN-IN field.
-7.  (E) Two new anti-patterns exist: answering a graph fault with another loop round, and
-    consensus dressed as evidence.
-8.  (E) Installed ~/.claude/skills/crank/SKILL.md and repo skill/SKILL.md are byte-identical.
-9.  (E) .loop/tools/check.sh passes, and its named-rule grep list is extended with the run-3 rule
-    names so future runs cannot silently drop them.
-10. (E) README.md gains a topology section placed between "The three things the hype skips" and
-    "Crank cranked Crank", with zero em dashes, no unverified number stated as fact, and the
-    DECOMPOSE bullet extended.
-11. (E) The live page gains an id="topology" section between #discipline and #modes, reusing the
-    page's existing card pattern, zero em dashes, no new external request, renders in both themes
-    with no horizontal overflow at 390px, and a nav link resolving to it.
-12. (E) Every rule added to the skill traces to a named source in the capture or to a tool
-    contract verified in-harness; no rule enters unsourced.
-13. (J) A fresh cold verifier judges that the skill gained discipline and not ceremony. Rubric:
-    every added rule names a trigger, an action and a source; the skill stays navigable; nothing
-    added restates a rule the skill already had.
+## C6 (Judge) The "do we need a knowledge graph" question is answered with an argument
+The run states plainly whether Crank should build or adopt a knowledge-graph memory layer, and
+argues it from the playbook's OWN decision framework plus Crank's actual scale, rather than
+asserting a preference. A reader who disagrees can see exactly which premise to attack.
 
-Note (documented contract edit, run 3, 2026-07-27): C11 was frozen at FRAME saying the new page
-section sits "between #discipline and #modes". Grounding was incomplete on this one point: #modes
-exists only in the stale local clone of victordelrosal.com, not on origin/main, which is the tree
-that actually ships. The real neighbour is #upgrade, so the section sits between #discipline and
-#upgrade and the intended argument order (mechanism, discipline, topology, proof) is preserved.
-Recorded here as well as in LOG.md per the run-1 precedent, so a future re-verification against
-the frozen contract does not fail on an anchor that never existed.
+## C7 (Env) The live memory failure is fixed, not just noted
+`~/.claude/crank/LEARNINGS.md` was measured at 738 lines / 69,859 bytes / 179 rules this run,
+against the skill's own rule that the file be "readable in under a minute". At the end of the
+run the global memory is restructured so that a fresh run can consult it without reading 70KB,
+AND the skill states the mechanism that keeps it bounded.
+ANCHOR: the restructured artifact exists at a named path and the entry file is under 200 lines;
+no rule text is deleted without being relocated (byte accounting shown).
 
-Note (run 3): C11's "reusing the page's existing card pattern" was satisfied as reuse plus scoped
-extension: the .rules/.rule/.pin/.src chassis is reused unchanged, and four #topology-scoped CSS
-rules plus one shared .rule .n label class were added. Stated rather than glossed.
+## C8 (Env) Read/write separation on memory is stated
+`skill/SKILL.md` states that the cold verifier reads the memory and state files but never writes
+them, and names the failure it prevents.
+ANCHOR: grep term in check.sh.
+
+## C9 (Env) The mechanical gate covers every new rule
+`.loop/tools/check.sh` has one grep term per rule added this round, and `bash .loop/tools/check.sh`
+prints GATE PASS.
+ANCHOR: run it.
+
+## C10 (Env) The public README carries the distinction
+`README.md` states the two meanings of "graph" and does not leave the July 27 topology section
+reading as the only meaning.
+ANCHOR: grep README.md.
+
+## C11 (Env) Style law holds and the installed skill is in sync
+Zero em dashes in every authored file, and `~/.claude/skills/crank/SKILL.md` is byte-identical to
+`skill/SKILL.md`.
+ANCHOR: `bash .loop/tools/check.sh` (it already asserts both).
+
+## C12 (Judge) The skill did not get fatter than it got better
+Net line growth of `skill/SKILL.md` this round is under 60 lines, OR any growth beyond that is
+offset by text pruned in the same round with the pruning named. RUBRIC: a reader comparing
+before/after agrees each added line earns its place.
+ANCHOR: `git diff --stat` on skill/SKILL.md.
