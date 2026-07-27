@@ -10,9 +10,9 @@ description: >-
   the acceptance criteria are yours to set. You grasp Victor's intent, write your own binary
   acceptance criteria (and a PRD when the work warrants one), dispatch a fleet, run a
   plan-execute-red-team-decide loop scored by /bet-weights, and STOP for a human before anything
-  irreversible or outward-facing. Model routing is automatic: the fleet shifts between fable,
-  opus, and sonnet per task shape so Victor never has to /model-switch mid-run, opens every run
-  by announcing the gear, and announces every shift as it happens.
+  irreversible or outward-facing. Model routing is automatic: the fleet runs in Opus and drops to
+  Sonnet only for mechanical passes, so Victor never has to /model-switch mid-run; it opens every
+  run by announcing the gear, and announces every shift as it happens.
   Supersedes the older loop-til-satisfied and diy-director skills.
   Default invocation is interactive Crank (you, present, between rounds). Pass the
   `scheduled` argument ("/crank scheduled ...", aliases "live", "cron", "unattended", "on a
@@ -99,27 +99,24 @@ the session itself is in right now, and how the automatic transmission will rout
 (adapt the specifics, keep the shape):
 
 ```
-⚙ GEARBOX (automatic). Session gear: Fable (top).
-Routing this run: planning + final verify stay in top gear (~10%, Fable is the
-hungry model: it plans and judges, it never executes); builders dispatch in
-drive (Opus); mechanical sweeps in low (Sonnet). I'll announce every shift.
+⚙ GEARBOX (automatic). Session gear: Opus 5 (drive).
+Routing this run: director thinking, builders and every cold verify stay in
+drive (Opus, ~95%); mechanical sweeps drop to low (Sonnet). I'll announce
+every shift.
 ```
 
-If the session is already in Fable, say so and say that top gear is therefore covered for
-director thinking, and that execution will still downshift (Fable executes nothing). If the
-session is in Opus or Sonnet, say that too, and that top-gear decisions will be spawned as
-`fable` subagents. Victor should never have to ask which gear the work is in; the run opens by
+Two gears, and drive is where the work lives. Victor drives Opus 5 and expects roughly 95% of any
+run to be Opus, so the honest gearbox is Opus by default and Sonnet only where the work is
+genuinely mechanical. He should never have to ask which gear the work is in: the run opens by
 telling him, and every later shift is announced as it happens (see "Announce every shift" in the
 transmission rules).
 
-**Know which model is running.** Note the model at ORIENT and match the scaffolding to it. On a
-non-Fable model (Opus, Sonnet, Haiku), load the `fable-mind` skill before FRAME and let
-`fable-effort-triage` own the loop-fitness call: the loop's structure is doing more of the work,
-so keep every gate at full strength. On a Fable-class model, the discipline still holds but
-FRAME may be compressed for small, well-scoped work; do not add ceremony the model natively
-covers. Either way the gates and the cold verifier never compress. The session model only
-governs the director's own thinking; every dispatched agent gets its gear from the transmission
-(see "The transmission: automatic model routing"), regardless of what the session runs.
+**Know which model is running.** Note the model at ORIENT and match the scaffolding to it. Load
+the `fable-mind` skill before FRAME and let `fable-effort-triage` own the loop-fitness call (those
+are doctrine skills, not a model choice: the reasoning discipline they carry is what keeps the
+gates at full strength). The gates and the cold verifier never compress. The session model governs
+only the director's own thinking; every dispatched agent gets its gear from the transmission (see
+"The transmission: automatic model routing"), regardless of what the session runs.
 
 ### 2. FRAME: self-prompt the contract (write it down before working)
 This is where you prompt yourself instead of waiting for Victor. Produce, in the workspace:
@@ -239,10 +236,10 @@ after the transmission).
   hats deliberately: Builder, then Critic, then Editor. The separation is the point. The Builder
   may be ambitious; the Critic must be brutal.
 - **Model mix**: route every dispatched agent through the transmission (see "The transmission:
-  automatic model routing" below). The defaults, so they cannot be misremembered: builders run
-  `opus`; mechanical passes (scrapes, sweeps, fixes) run `sonnet` at low effort; the final-round
-  verifier and any high-stakes red-team run `fable`. Each FLEET role in `BRIEF.md` names its
-  gear, and Victor is never asked to `/model`-switch: the fleet shifts itself.
+  automatic model routing" below). The defaults, so they cannot be misremembered: builders,
+  verifiers and red-teams all run `opus`; only genuinely mechanical passes (scrapes, sweeps, format
+  fixes) run `sonnet` at low effort. Each FLEET role in `BRIEF.md` names its gear, and Victor is
+  never asked to `/model`-switch: the fleet shifts itself.
 
 ### 4. EXECUTE
 Do the work in the smallest reversible steps that still move fast. Verify as you go: run the
@@ -388,49 +385,48 @@ Switch fully into hostile-critic mode. Your job here is to fail the work, not de
 
 ## The transmission: automatic model routing
 
-Victor drives automatic, not stick. He should never have to stop and `/model`-switch between
-Fable for planning, Opus for building, and Sonnet for menial work; that is Crank's job. The
-session model is whatever it is; every agent the loop dispatches carries an explicit model
-override chosen by task shape. The gearbox is real and already installed: the Agent tool takes
-a `model` parameter (`fable`, `opus`, `sonnet`, `haiku`) and Workflow's `agent()` takes
-`opts.model` plus `opts.effort`. Use them on every dispatch; an agent spawned without a
-deliberate gear choice is a missed shift.
+Victor drives automatic, not stick. He should never have to stop and `/model`-switch between Opus
+for the real work and Sonnet for the menial passes; that is Crank's job. The session model is
+whatever it is; every agent the loop dispatches carries an explicit model override chosen by task
+shape. The gearbox is real and already installed: the Agent tool takes a `model` parameter and
+Workflow's `agent()` takes `opts.model` plus `opts.effort`. Use them on every dispatch; an agent
+spawned without a deliberate gear choice is a missed shift.
+
+Two gears, because Victor drives Opus 5 and expects roughly 95% of a run to be Opus. Do not invent
+a third.
 
 | Gear | Model | Route here | Share |
 |---|---|---|---|
-| **Top** | `fable` | FRAME on high-stakes or ambiguous missions; the structural bet after a stuck round; the cold verifier on judge-checkable criteria and on the final round; red-teaming anything outward-facing; the one decision the whole run hinges on | ~10% |
-| **Drive** | `opus` | Builders and execution workstreams; routine per-round verification; integration and handoff writing. The default gear: when in doubt, drive | ~85% |
-| **Low** | `sonnet` | Mechanical work: scraping, grep sweeps, format fixes, file moves, link checks, bulk transforms, data plumbing, running check scripts. Pair with `effort: 'low'` | ~5% |
-| **Crawl** | `haiku` | Truly trivial bulk mechanics (hundreds of identical checks or extractions) where even Sonnet is overkill | rare |
+| **Drive** | `opus` | Everything that involves judgment: FRAME, builders and execution workstreams, every cold verifier, red-teaming, the structural bet after a stuck round, integration and handoff writing. The default gear: when in doubt, drive | ~95% |
+| **Low** | `sonnet` | Mechanical work only: scraping, grep sweeps, format fixes, file moves, link checks, bulk transforms, data plumbing, running check scripts. Pair with `effort: 'low'` | ~5% |
 
 Shifting rules:
 - **Announce every shift, out loud, as it happens.** The gearbox is transparent, never silent.
   The run opens with the gearbox block (see ORIENT), and every dispatch or mid-run gear change
   gets one visible line in the reply, e.g. `⚙ shifting to low (sonnet): link sweep across 40
-  pages` or `⚙ top gear (fable): cold verify, final round`. Victor always knows whether the
-  work of the moment is in Fable, Opus, or Sonnet without asking.
-- **Top gear plans and judges; it never executes.** Fable is the hungry model: reserve it
-  (~10% of the run) for FRAME on hard missions, the structural bet, the final cold verify, and
-  red-teaming outward-facing work. Execution always downshifts to drive or low, even when the
-  session itself is running Fable.
-- **Route by task shape, not by mood or habit.** Judgment-heavy shifts up; mechanical shifts
-  down; everything else stays in drive. The shares above are a sanity check, not a quota: a
-  scrape-heavy run is legitimately mostly low gear, a strategy run mostly top.
-- **The verifier rides one gear above its builder** whenever affordable. Verification is where
-  the quality actually comes from; a Sonnet builder graded by an Opus verifier is a good trade,
-  an Opus build graded by a Fable verifier on the final round is the best one in the box.
-- **Escalate on repeated failure.** A workstream that fails the same criterion twice on its
-  current gear gets one round on the next gear up before the director reaches for a fork or a
-  structural rewrite. One shift is cheaper than a wasted round.
+  pages` or `⚙ staying in drive (opus): cold verify, final round`. Victor always knows whether the
+  work of the moment is in Opus or Sonnet without asking.
+- **Judgment never downshifts.** Verification, framing, red-teaming and any decision the run hinges
+  on stay in drive, always. Sonnet earns its dispatches by being mechanical, not by being cheaper:
+  the moment a "mechanical" pass turns out to require a judgment call, it comes back to drive.
+- **Route by task shape, not by mood or habit.** Mechanical shifts down; everything else stays in
+  drive. The shares above are a sanity check, not a quota: a scrape-heavy run is legitimately more
+  low gear, and a pure strategy run can be 100% drive.
+- **The verifier is never below its builder.** Verification is where the quality actually comes
+  from, so a Sonnet builder graded by an Opus verifier is a good trade, and an Opus build is graded
+  by a fresh Opus verifier in a separate cold context. Context isolation, not a bigger model, is
+  what makes the grader honest.
+- **Escalate on repeated failure.** A workstream that fails the same criterion twice in low gear
+  gets one round in drive before the director reaches for a fork or a structural rewrite. One
+  shift is cheaper than a wasted round. A workstream already in drive escalates by changing the
+  approach or the angle (a fork, a fresh lens, a different decomposition), never by reaching for a
+  gear that no longer exists.
 - **Downshift the moment work turns mechanical.** If a drive-gear agent's remaining job is
   applying a known fix across N files, that is a new low-gear dispatch, not a reason to keep
   paying drive rates.
 - **The director cannot shift the session itself.** The main loop's model is set by Victor's
-  `/model` and is out of the loop's reach; never ask him to change it mid-run. If director-level
-  thinking needs top gear while the session runs something else, the answer is always the same:
-  spawn a `fable` subagent for that single decision and fold its answer back. Not "raise effort
-  and hope", not "ask Victor to switch"; a fable subagent. Effort settings tune within a gear;
-  they never substitute for the gear.
+  `/model` and is out of the loop's reach; never ask him to change it mid-run. Effort settings tune
+  within a gear; they never substitute for the gear.
 - **Log the gear.** Every FLEET role in `BRIEF.md` names its model, and mid-run shifts are noted
   in `LOG.md` (a one-word annotation in DID is enough). An auditable transmission is one Victor
   can retune.
