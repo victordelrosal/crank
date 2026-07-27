@@ -114,3 +114,32 @@ DECIDE: STOP. Every criterion passes on the cold verifier's verdict, both gates 
 round produced no new failure to aim at. Two acknowledged weaknesses remain and are reported rather
 than hidden: nothing automatically invokes `learnings-check.sh` (it runs when an agent chooses to),
 and `tools/shoot.sh` was named as the highest-leverage next move but not built.
+
+## Round 3 (2026-07-27 22:15) - executed on Victor's "/diy" follow-up
+
+HYPOTHESIS (structural): the two weaknesses Round 2 reported rather than fixed are the whole
+remaining value of the run. Building the tool proves the "Retire rules into tools" rule on its
+first outing instead of leaving it as prose adopted the same day it was written.
+
+DID:
+- Built `~/.claude/crank/tools/shoot.sh` and retired 7 rules into it (archived `superseded-by`).
+- Wired `learnings-check.sh` into `.loop/tools/check.sh`, proved by negative test that it fails
+  the repo gate, then restored. A missing tool is now FAIL, not WARN.
+- Cold verifier failed the tool on exit codes: 3 wrong-image conditions returned 0. Fixed with an
+  exit-4 SUSPECT contract; 11 of 11 exit codes re-verified. Added two SIGKILL watchdogs after the
+  verifier proved `kill -9` leaked the server, then chrome.
+- Restored the general half of the `timeout` rule to `shell-tooling.md`: the verifier caught that
+  retiring a shell fact into a browser tool would have dropped it.
+
+FAN-IN: 1 dispatched (cold verify of the tool), 1 returned. No gap.
+
+VERDICT: cold verifier PASS on C-A, C-B, C-D, C-F; PARTIAL on C-C and C-E, both closed afterwards
+(the SIGKILL leak, and the one em dash normalised before archiving, now recorded as a caveat with
+the gate changed so future evictions stay byte-verbatim).
+
+DECIDE: STOP, and this supersedes Round 2's closing note. Both weaknesses named there are closed.
+Memory accounting 179 baseline, minus 7 retired, plus 4 added, equals 176 live.
+
+REMAINING, honestly: the `setTimeout` late-paint case cannot be detected by any load signal and is
+documented as a limit at the top of `shoot.sh`, not fixed. Shard placement debt from the keyword
+migration is unpaid and self-correcting. Nothing else is outstanding in this repo.
