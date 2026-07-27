@@ -25,5 +25,17 @@ for s in "Ground before you frame" "Baseline before you improve" "evaluation sur
   "One word, two disciplines" "The verifier is read-only" "Every rule carries its evidence and its date" "The global file is an index, not a journal" "Retire rules into tools" "One raw sample"; do
   grep -q "$s" "$INSTALLED" || { echo "FAIL missing: $s"; FAIL=1; }
 done
+# The global craft memory is part of what a crank run ships, so its gate runs inside this one.
+# Enforcement, not prose: SKILL.md says learnings-check.sh is blocking, and this is where it blocks.
+# CROSS-MACHINE DEPENDENCY, stated so a future reader is not surprised: this gate can fail for
+# state OUTSIDE this repo (~/.claude/crank/), which this repo does not contain, track, or ship.
+# That is deliberate, since the global craft memory is part of what a crank run produces, but it
+# means this gate is NOT reproducible from a clean clone on another machine. A missing tool is a
+# FAIL, not a warning: enforcement that can be removed by deleting a file is not enforcement.
+if [ -x "$HOME/.claude/crank/tools/learnings-check.sh" ]; then
+  bash "$HOME/.claude/crank/tools/learnings-check.sh" || { echo "FAIL learnings gate"; FAIL=1; }
+else
+  echo "FAIL: ~/.claude/crank/tools/learnings-check.sh missing or not executable"; FAIL=1
+fi
 if [ "$FAIL" = "0" ]; then echo "GATE PASS"; else echo "GATE FAIL"; fi
 exit $FAIL
