@@ -137,8 +137,11 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
   rewrite it until it can. **Prefer environment-checkable over judge-checkable**: a criterion a
   command can verify (the test passes, the page returns 200, 0 console errors, the file exists at
   the path) beats one only a judge can score, because the feedback comes from the environment,
-  not an opinion. Reserve judge-checkable criteria for the genuinely tasteful calls, and even
-  then name the rubric. Criteria are frozen at FRAME; any mid-run edit to a criterion is a
+  not an opinion. Every criterion should name the **anchor** it will finally rest on: the command,
+  the URL, the file, the number that cannot argue back (see the anchors rule in RED-TEAM). A
+  criterion whose only possible evidence is another agent's report is not environment-checkable,
+  however many agents agree. Reserve judge-checkable criteria for the genuinely tasteful calls, and
+  even then name the rubric. Criteria are frozen at FRAME; any mid-run edit to a criterion is a
   downgrade and follows the downgrade rules.
 - **Loop-fitness check.** Once the criteria are written, look at the ratio. If most are
   environment-checkable, the task is loop-shaped: run the full budget. If most are
@@ -156,6 +159,12 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
   nothing objective to converge on and will just amortize its setup over a vision it is guessing
   at. Say so plainly and offer one well-aimed pass with a single red-team instead of a
   multi-round loop. Looping is the tool here; it is not a tax every task has to pay.
+- **Graph-fitness check.** Loop-fitness asks whether the work has a signal to converge on;
+  graph-fitness asks whether it has a shape worth fanning out. Apply the fake-edge test
+  (DECOMPOSE) to the workstreams you are about to name: if you cannot find two that could run at
+  the same time without one consuming the other's output, there is no fan-out to build. It is a
+  single loop, and a single loop is fine. Fan-out buys breadth, not judgment, and it bills for the
+  breadth.
 - **A PRD when the work warrants one** (a product, a feature, a multi-asset launch, anything a
   builder would need a spec for). Use the `sophie-prd` skill for the shape. For a one-off
   artifact, the BRIEF plus CRITERIA is enough; do not manufacture a PRD for small work.
@@ -167,17 +176,65 @@ This is where you prompt yourself instead of waiting for Victor. Produce, in the
 
 ### 3. DECOMPOSE: dispatch the fleet
 Break the mission into workstreams with clean interfaces (what each produces, what it depends
-on). Decide which are parallelisable (independent, no shared state) and which are sequential.
-Every criterion gets a named owner, even if the owner is "self".
+on). Decide which are parallelisable and which are sequential. Every criterion gets a named owner,
+even if the owner is "self".
 
+This step is Crank's graph step. The fleet is a shape, and the shape has failure modes the loop
+running inside it cannot catch: work waiting on nothing, two builders overwriting each other, a
+dead agent leaving a hole in a report that still looks complete. The rules below are that shape's
+discipline (and when a round is stuck, first ask which layer owns the failure; see the section
+after the transmission).
+
+- **The fake-edge test.** For every ordered pair in the plan, ask one question: does B consume an
+  artifact A produced? If yes the edge is real, keep the order. If no, the edge is imaginary and
+  the wait is pure latency, so run them at the same time. Most plans that read as sequences carry
+  two or three fake edges, and a chain of N steps has N points of sequential failure it never
+  needed. Run this test before dispatching, every time; on a two-agent run it is one question, not
+  a ceremony, and it is the cheapest speed in the loop. (Kopadze, "Graph Engineering explained",
+  2026, the source for the topology rules in this step; captured in
+  `research/graph-engineering-2026-07.md`.)
 - **With subagents or Workflow**: spawn one per independent workstream in the same turn. That is
-  the literal fleet. Give each a crisp brief and the criteria it owns. For larger fan-out or
-  multi-stage pipelines, use the Workflow tool; for a handful of independent tasks, use parallel
-  Agent calls. A fleet of three sharp specialists beats seven generalists every time.
-  Instruct every builder to open its report with a three-line readback: what it understood the
-  brief to be, the approach it took and how the criteria it owns will be verified, and the
-  assumptions it made. The director audits the readback against the BRIEF before reading the
-  build; a wrong readback caught in three lines is a round saved.
+  the literal fleet. Give each a crisp brief and the criteria it owns. A fleet of three sharp
+  specialists beats seven generalists every time.
+  Every dispatch carries a **node contract**: one bounded job, a defined input, and a defined
+  output shape, all declared before the agent runs. A builder whose output is free prose is a node
+  only a human can consume, so the next stage guesses; where the harness supports it (Workflow's
+  `agent({schema})`), the output shape is enforced and the model retries on mismatch. On top of
+  the contract, instruct every builder to open its report with a three-line readback: what it
+  understood the brief to be, the approach it took and how the criteria it owns will be verified,
+  and the assumptions it made. The readback proves the node understood the brief; the contract
+  proves the next node can read the result. The director audits the readback against the BRIEF
+  before reading the build; a wrong readback caught in three lines is a round saved.
+- **Audit for hidden edges before calling anything independent.** Two workstreams whose briefs
+  never mention each other are still coupled if they write the same file, branch, database, or
+  rate-limited API. That is a hidden edge, and parallelising across it produces overwrites nobody
+  logged. Audit shared *resources*, not just shared data. Where two builders must touch the same
+  tree, give each its own git worktree (`isolation: 'worktree'`) or serialize them with a real
+  edge. Any two nodes writing the same file need an edge, not parallelism.
+- **Fan out, reduce, verify, synthesize.** The shape worth reaching for: fan out for breadth
+  (independent workstreams at once), **reduce in plain code** (dedupe, merge, count, filter, with
+  no model call), verify with a fresh cold skeptic per finding, then let one agent synthesize from
+  what survived. The reduce step is where most token waste hides; a model asked to dedupe a list
+  is doing badly what five lines of code do exactly. And never pour every workstream's raw output
+  into one synthesis step; use a **layered fan-in**, batching the results, summarizing each batch,
+  then combining the summaries rather than the raw pile. That layering
+  applies to integration and to the handoff, not only to the verifier's payload.
+- **The fan-in guard: no silent node failure.** Every fan-in asserts its count. Before reading any
+  results, compare the number returned against the number dispatched. The harness makes this
+  silence easy: `parallel()` resolves a dead or skipped agent to null and the idiomatic
+  `.filter(Boolean)` drops it without a word (Claude Code Workflow tool contract, read in-harness;
+  the counting rule itself is Kopadze). When the counts differ, name the gap in
+  `LOG.md` and in the handoff, and never let a synthesizer or a verifier grade a partial set as
+  though it were whole. In a chain, a dead step stops everything and you notice. In a fan-out, one
+  dead agent among twenty is a gap in a report that looks finished.
+- **Reach for Workflow when the topology is real.** Parallel Agent calls are correct for a handful
+  of independent workstreams. Use the Workflow tool when the run has genuine topology: many items
+  through multiple stages, per-item verification, a budget ceiling to enforce in code, or resume
+  after a crash. Prefer `pipeline()` to a barrier; a barrier earns its latency only when a stage
+  truly needs every prior result at once (dedup across the whole set, an early exit on zero, a
+  comparison across findings). And do not formalize a topology you have not watched run: the
+  traces from a simpler pass tell you where the real edges are, so freeze into a repeatable
+  pipeline only the paths that proved stable.
 - **Without subagents (plain chat)**: run workstreams as sequential passes and adopt distinct
   hats deliberately: Builder, then Critic, then Editor. The separation is the point. The Builder
   may be ambitious; the Critic must be brutal.
@@ -232,6 +289,18 @@ that edits the test instead of the work is a downgrade in disguise and follows t
 rules (written, surfaced, never silent). This is Karpathy's anti-cheat rule (the eval function
 is unmodifiable) and Anthropic's harness law ("unacceptable to remove or edit tests") in
 Crank's terms.
+
+**Anchors: topology does not buy truth.** A fleet where every node's evidence is another node's
+report is one loop in a costume: internally consistent, entirely unverified, and more expensive
+than the single loop it replaced. It fails the same way, later, with more green lights on the way
+down. So every criterion must finally rest on an **anchor**, something that cannot argue back: a
+test that actually ran, a URL that actually returned 200, a file that exists at the path, a number
+that came from the environment rather than from an agent. Adding verifiers adds confidence, not
+truth; three skeptics agreeing about a claim nobody executed is three opinions. When a criterion
+genuinely has no anchor available, say so and mark it judge-checkable rather than dressing a
+consensus up as a fact. This is the reason the evaluation surface above is frozen: the anchors are
+exactly what an optimizer would be tempted to weaken (Kopadze, 2026; captured in
+`research/graph-engineering-2026-07.md`).
 
 These rules keep the verifier honest:
 - **The verifier's verdict gates the stop.** The loop cannot declare done while the cold verifier
@@ -369,6 +438,37 @@ Shifting rules:
   buys attention allocation and latency, not just money. On metered tokens it is also the
   difference between a loop you can afford and one you cannot.
 
+## The three layers: which one owns the failure
+
+Three kinds of engineering sit around a model and get mixed up constantly, because they nest.
+**The harness** is the environment: tools, filesystem, sandbox, permissions, model routing,
+budgets, logging, the interfaces verification runs through. **The loop** is the feedback cycle:
+generate, act, evaluate, decide, repeat. **The graph** is the topology: which node runs next, what
+fans out, what joins, where the gates are. The harness contains the graph, the graph contains
+loops, and the harness supplies the state, tools and evaluators the loops need.
+
+Crank is the loop, and DECOMPOSE is its graph step. The harness is Claude Code's: Crank specifies
+what it needs from a harness (durable files, a fleet, isolation, budgets, an environment it can
+run things in) and does not build one. That is a scope statement, not a gap.
+
+The reason to keep the three straight is diagnostic. A stuck round usually gets answered with
+another round when it should be answered at a different layer.
+
+| Symptom | Layer | The fix |
+|---|---|---|
+| Cannot reach the data, the tool, or the file safely | Harness | Tool contract, permissions, sandbox, context injection |
+| Forgets progress across sessions or wakes up lost | Harness | Durable state, checkpoints, `LOG.md`, `STATE.json` |
+| First attempt is close but unreliable | Loop | An external grader, deterministic checks, bounded retry |
+| Keeps working after success, or stops without proof | Loop | Evidence-based stop, the verifier's verdict as the gate |
+| Specialists running in the wrong order, or work waiting on nothing | Graph | The fake-edge test, real edges, explicit joins |
+| Cannot tell which stage broke, or a report looks complete but is not | Graph | The fan-in guard, per-node logging, scoped verification |
+| The shape of the work changes every run | Neither | Stop formalizing. Run it simply, keep the traces, formalize later |
+
+The three-layer framing is beamnxw, "Agent Harness Engineering vs. Loop Engineering vs. Graph
+Engineering", 2026; the graph mechanics throughout DECOMPOSE are Kopadze, "Graph Engineering
+explained", 2026. Both are attributed secondary sources, captured with their weaknesses stated in
+`research/graph-engineering-2026-07.md`; no rule entered this skill on their authority alone.
+
 ## The director's brief (the `BRIEF.md` template)
 
 Save as `BRIEF.md` next to `CRITERIA.md`.
@@ -380,6 +480,7 @@ WHO:          <target audience, specific, not "general readers">
 CRITERIA:     <5-10 binary tests, each a single sentence>
 PRD:          <yes/no; if yes, path to the PRD>
 FLEET:        <agent count + named role per agent + model gear per role + criterion ownership>
+EDGES:        <the real edges: what waits on what and why; everything else runs at once>
 LOOP BUDGET:  <max rounds: default 3, use 5 if "deep">
 EXIT:         <what "done" looks like in one sentence>
 DOWNGRADES:   <which criteria may be relaxed if blocked, and why>
@@ -401,6 +502,7 @@ BASELINE:     <improvement-shaped missions only: the measured starting state>
 ## Round N (date)
 HYPOTHESIS:   <this round's improvement bet, marked structural or scalar>
 DID:          <what actually changed, with paths>
+FAN-IN:       <agents dispatched vs results returned; name any gap, never absorb it silently>
 ASSUMPTIONS:  <gap-filling calls made beyond the BRIEF, one line each>
 VERDICT:      <the cold verifier's one-line verdict + per-criterion marks>
 DECIDE:       <stop / iterate / downgrade, and the single next action>
@@ -533,6 +635,12 @@ interactive loop as normal.
   mental model behind the criteria was never grounded in the real artifacts, every round
   polishes the wrong thing with increasing confidence. Ground first; the expensive failures
   are shared misunderstanding, not bad execution.
+- **Answering a graph fault with another loop round.** When work is waiting on nothing, when two
+  builders overwrote each other, or when nobody can say which stage broke, another round of the
+  same loop will not help. Fix the layer that owns the failure.
+- **Consensus dressed as evidence.** A criterion that passed because three agents agreed, and no
+  command was ever run, is unverified. More verifiers buy confidence, not truth. Find the anchor
+  or mark the criterion judge-checkable.
 - **Using this for trivial work.** Crank is for substantial deliverables. Three-line
   edits do not need a writers room. If the work is small, just do it.
 

@@ -140,3 +140,79 @@ URL added to the v2 row; "never pause" replaced with the program.md-sourced phra
 C13 upgraded per-approach coverage 23/23. Dogfood: mechanical gate distilled to
 .loop/tools/check.sh per the new tools doctrine. STOP: budget round 2 of 2 extension used,
 verifier verdicts recorded, ship: commit + push + /html before/after page.
+
+---
+
+# Run 3 (2026-07-27): the topology layer
+
+## Round 0
+GROUNDING:    Installed skill and repo copy byte-identical at 672 lines, VERIFIED via cmp (no
+              drift this time; the 2026-07-04 repair held). The live page is served from the
+              victordelrosal.github.io repo at crank/index.html, VERIFIED against CNAME + the
+              project memory note, and the crank repo's own docs/index.html is dark. The local
+              Dropbox clone of victordelrosal.com is 0 ahead / 159 behind origin/main, VERIFIED
+              via rev-list, and its crank/index.html is 366 lines behind the real one (origin/main
+              carries a TRANSMISSION section the stale copy never saw). All page work therefore
+              happens in a worktree checked out at origin/main; the stale clone is not edited.
+              ASSUMED: the two X articles are faithfully reproduced in Victor's paste (no fetch
+              was possible, X long-form sits behind a Premium wall). Recorded as attributed
+              secondary in the capture, and no rule rests on their authority alone.
+BASELINE:     skill/SKILL.md 672 lines, gate PASS, 16 covered mechanisms and 11 genuine gaps
+              against the two sources (table in research/graph-engineering-2026-07.md).
+
+## Round 1 (2026-07-27)
+HYPOTHESIS:   Structural. Every prior benchmark round improved the cycle; this is the first source
+              material aimed at the SHAPE of the fleet, so the bet is that the gaps are real and
+              concentrated in DECOMPOSE rather than spread thin. If true, one round of surgery on
+              DECOMPOSE plus two new hard rules (anchors, the fan-in guard) closes most of it.
+DID:          Wrote the frozen delta spec (.loop/DELTA-2026-07-27.md, 11 adopted, 5 rejected) and
+              the capture (research/graph-engineering-2026-07.md). SKILL.md 672 -> 780 lines (final count after the round-2 fixes below):
+              DECOMPOSE reframed as the graph step with the fake-edge test, node contract,
+              hidden-edge audit with worktree isolation, fan-out-reduce-verify-synthesize with
+              reduce in code and layered fan-in, the fan-in guard, and Workflow-when-the-topology-
+              is-real; anchors added to RED-TEAM; graph-fitness added to FRAME plus an anchor
+              clause on the criteria rule; a three-layer diagnostic section after the transmission;
+              EDGES in the BRIEF template, FAN-IN in the LOG template; two anti-patterns.
+              check.sh extended with 8 new named-rule greps and the two new authored files.
+              Dogfooded the new rules on this run: fake-edge test applied before dispatch (the two
+              builders' edge to each other was imaginary), hidden-edge audit run (no shared file),
+              the page builder isolated in its own git worktree.
+FAN-IN:       Round 1: 2 builders dispatched (README section, live page section), 2 returned, 0
+              gaps. Verification: 2 cold verifiers dispatched (doctrine, artifacts). At the time
+              this entry was written, verifier 1 had returned and verifier 2 was still running;
+              the count is closed in the round-2 entry below, not assumed here. (Self-caught: the
+              first draft of this line claimed both had returned, which was writing from intention
+              rather than from the diff, the exact failure the global LEARNINGS rule names and the
+              one verifier 2 caught on 2026-07-04.)
+ASSUMPTIONS:  (1) The two X articles are faithfully reproduced in Victor's paste; recorded as
+              attributed secondary, no rule rests on their authority alone. (2) Victor's
+              instruction to "update victordelrosal.com/crank/ and its github repo" is standing
+              authorization to publish both, so publication is not re-gated mid-run. (3) The live
+              page section belongs before #upgrade (the stale local clone's #modes section does
+              not exist on origin/main); the argument order mechanism, discipline, topology,
+              proof is preserved. (4) Handoff logs and design PRDs were deliberately left
+              untracked rather than swept into the public repo.
+VERDICT:      Cold verifier 1 (doctrine, fable, fresh, payload scoped to the skill plus the
+              capture per the cap-the-payload rule): C2-C9 PASS on executed evidence, C1 and
+              C12 PARTIAL, C13 FAIL. Nine defects, worst first: WHISPER.md (explicitly private per
+              the 2026-07-04 handoff) staged toward the PUBLIC remote; a VERIFIED claim about tool
+              parameters a cold verifier cannot reproduce; in-skill citation practice silently
+              dropped (the run-1 precedent); the null/.filter(Boolean) mechanism attributed to a
+              source that does not contain it; em dashes in swept-in handoff logs; this very log
+              entry missing the FAN-IN field the run itself added; a stale line count; view counts
+              repeated without the UNVERIFIED mark; and a mild ceremony risk on small runs.
+DECIDE:       Iterate, scalar, all nine addressed in one pass rather than spending a round each.
+              Fix 1 (the stop-ship): git reset --soft to 621ffeb so WHISPER.md never enters
+              history, plus a .gitignore entry so it can never be swept in again. Nothing had been
+              pushed, so the exposure was zero. Fix 2: the tool-parameter claim now states exactly
+              what was read (Agent takes model; Workflow's agent() takes opts.model and
+              opts.effort) and flags that a subagent cannot see the Workflow tool, so a cold check
+              cannot reproduce it. Fix 3: five inline citations added to SKILL.md (fake-edge test,
+              fan-in guard, anchors, the three-layer section), restoring the run-1 precedent.
+              Fix 4: the null/.filter(Boolean) detail is now attributed to the Workflow tool
+              contract, with the counting rule still credited to Kopadze. Fix 5: handoff logs and
+              design/ left untracked. Fix 6: this entry. Fix 7: line count corrected to 780.
+              Fix 8: both view counts marked UNVERIFIED. Fix 9: the fake-edge test now says that
+              on a two-agent run it is one question, not a ceremony. Also cut a restatement the
+              verifier caught: the anchors paragraph no longer re-states the frozen-evaluation-
+              surface rule that sits directly above it, it now points at it.

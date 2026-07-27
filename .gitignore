@@ -1,2 +1,5 @@
 .DS_Store
 *.log
+
+# Private founder artifact: never push to the public repo (see log/handoff-2026-07-04-2118.md)
+WHISPER.md

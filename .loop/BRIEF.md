@@ -28,3 +28,31 @@ Memory Bank, spec-driven harnesses, academic self-improvement loops), then execu
 bet-worthy deltas. Criteria 13-16 appended. Budget: +2 rounds (4 total). Fleet: 3 parallel
 research agents (Karpathy/local, practitioner harnesses, academic mechanisms), director
 synthesis, panel, builder, fresh cold verifier #2.
+
+## v3 run (2026-07-27): the topology layer
+
+WHAT:         /crank absorbs the harness/loop/graph distinction: a topology-aware DECOMPOSE, an
+              anchors rule, a layer diagnostic; plus a research capture, a README section, and a
+              new section on the live page at victordelrosal.com/crank/.
+WHY:          Victor passed two late-July X articles (beamnxw on the three layers, Kopadze on
+              graph mechanics) and asked Crank to process, refine, reflect, then crank itself.
+              Same pattern as the 2026-07-04 rounds: new source, extract the delta, execute only
+              the bet-worthy changes, publish the record.
+WHO:          Future Crank runs everywhere, and readers of github.com/victordelrosal/crank and
+              victordelrosal.com/crank/.
+CRITERIA:     see CRITERIA.md run-3 block (13, mostly environment-checkable; loop-shaped).
+PRD:          no. BRIEF + CRITERIA + DELTA suffice for a doctrine edit.
+FLEET:        director/builder = Claudus on Opus 5 (delta spec, research capture, SKILL.md
+              surgery, gate, deploy); builder A = opus (README section); builder B = opus (live
+              page section, in an isolated worktree); cold verifier = fable, fresh, final round.
+EDGES:        builders A and B both wait on .loop/DELTA-2026-07-27.md and on nothing else. No
+              edge between them (fake-edge test applied: neither consumes the other's output).
+              Hidden-edge audit: A writes README.md only, B writes a worktree index.html only,
+              director writes skill/, research/, .loop/. No shared file, no git op by builders.
+              Verifier waits on all three.
+LOOP BUDGET:  3 rounds max.
+EXIT:         Skill carries the eleven adopted deltas and nothing unsourced, both copies
+              identical, gate passes, cold verifier passes, both repos pushed, live URL serves
+              the new section.
+DOWNGRADES:   C13 (verifier's no-ceremony judgment) may land PARTIAL with a written rationale;
+              it is the one judge-checkable criterion. C1 to C12 may not be downgraded.
