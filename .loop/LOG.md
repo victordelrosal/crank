@@ -216,3 +216,30 @@ DECIDE:       Iterate, scalar, all nine addressed in one pass rather than spendi
               on a two-agent run it is one question, not a ceremony. Also cut a restatement the
               verifier caught: the anchors paragraph no longer re-states the frozen-evaluation-
               surface rule that sits directly above it, it now points at it.
+
+## Round 2 (2026-07-27, closing)
+HYPOTHESIS:   Scalar. Both verifiers' defects are fixable in one pass without touching the
+              adopted doctrine, so spend one round on all of them rather than a round each.
+DID:          All nine verifier-1 defects and all four verifier-2 defects fixed (see the round-1
+              DECIDE for the itemised list, plus: README symptom table restored the dropped
+              "simplify the harness"; CRITERIA gained two dated documented contract edits, the
+              #modes anchor and the reuse-plus-extension note; #topology's closing pull quote
+              gained a second, earlier, section-scoped ScrollTrigger). Then Victor interjected
+              mid-run: he is staying on Opus 5, so the transmission drops from four gears to two
+              (Opus ~95%, Sonnet for mechanical work only), Fable 5 and the Haiku crawl gear
+              removed from the skill, the README and the live page, with two replacement rules
+              (judgment never downshifts; the verifier is never below its builder, because
+              context isolation is what makes a grader honest).
+FAN-IN:       Closed. 4 agents dispatched across the run (2 builders, 2 cold verifiers), 4
+              returned, 0 gaps, no silent losses.
+ASSUMPTIONS:  Victor's "leave only sonnet where/as needed" was read as removing the Haiku crawl
+              gear too, since Sonnet becomes the only non-Opus gear. Easy to restore if wrong.
+VERDICT:      Verifier 1 (doctrine): C2-C9 PASS, C1/C12 PARTIAL, C13 FAIL, 9 defects. Verifier 2
+              (artifacts): C10 PASS, C11 PARTIAL, 4 defects, and its own process check clean.
+              After the round-2 fixes: 13 of 13 criteria pass on re-checked evidence, with the two
+              PARTIAL contract deviations recorded rather than argued away. Live anchor: HTTP 200
+              at victordelrosal.com/crank/, #topology present, two-gear readout present, zero
+              Fable references served.
+DECIDE:       Stop. Both repos pushed, the live URL verified against the anchor rather than
+              against memory, LEARNINGS distilled to workspace (project truths) and global (four
+              craft rules). Budget used: 2 rounds of 3.
